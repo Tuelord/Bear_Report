@@ -1,0 +1,71 @@
+flowchart TB
+    %% External Entities
+    Child["Child Learner (PERS01)"]
+    Parent["Parent (PERS02)"]
+    Teacher["Support Teacher (PERS03)"]
+    SpeechSvc["Native TTS / STT Service"]
+    AISvc["AI Recommendation Service"]
+    NotifySvc["OS Notification Service"]
+
+    %% Processes
+    P1(("1.0\nProfile, Role Access\n& Accessibility\nManagement"))
+    P2(("2.0\nVersioned Library,\nSearch & Story\nPreview"))
+    P3(("3.0\nInteractive Story\nEngine & Player\n(Child Mode)"))
+    P4(("4.0\nScenario E Voice\n& Touch Fallback\nProcessor"))
+    P5(("5.0\nSession Logging,\nVersioned Review\n& Learning Plan"))
+    P6(("6.0\nExplainable AI,\nHelp/FAQ &\nIssue Reporting"))
+
+    %% Data Stores
+    D1[("D1: Profiles & Access Links")]
+    D2[("D2: Accessibility & Privacy")]
+    D3[("D3: Versioned Story Library")]
+    D4[("D4: Session & Interaction Logs")]
+    D5[("D5: Plans, Reminders & Feedback")]
+
+    %% Flows - Process 1
+    Parent -->|"Profile data, Teacher link, Accessibility config"| P1
+    Teacher -->|"Auth credentials & Authorized profile selection"| P1
+    P1 <-->|"Read/Write profiles & role links"| D1
+    P1 <-->|"Read/Write font, audio, motion & consent"| D2
+
+    %% Flows - Process 2
+    Parent -->|"Search query, Category filter, Preview request"| P2
+    Teacher -->|"Search & Preview request"| P2
+    P2 <-->|"Query stories & story_version"| D3
+    P2 -->|"Story details & full scene preview"| Parent
+    P2 -->|"Launch selected story_version"| P3
+
+    %% Flows - Process 3
+    D2 -->|"Apply font scale, speech rate, reduce motion"| P3
+    D3 -->|"Load scenes, choices & Why explanations"| P3
+    Child -->|"Tap choice, Replay, Retry, Pause, Need Help"| P3
+    P3 -->|"Narration text utterance"| SpeechSvc
+    SpeechSvc -->|"Single-stream audio playback"| P3
+    P3 -->|"Scene illustration, Reaction & Why explanation"| Child
+    P3 -->|"Log chronological interaction events & status"| P5
+
+    %% Flows - Process 4
+    Child -->|"Spoken phrase or Parallel touch card selection"| P4
+    D2 -->|"Verify Microphone consent"| P4
+    P4 -->|"Ephemeral audio stream (if Voice used)"| SpeechSvc
+    SpeechSvc -->|"Recognized keyword transcript"| P4
+    P4 -->|"Confirmed choice / Touch fallback trigger"| P3
+
+    %% Flows - Process 5
+    P5 <-->|"Write/Read session logs pinned to story_version"| D4
+    D3 -->|"Resolve exact historical story_version text"| P5
+    P5 -->|"Descriptive Session Review (no ASD scoring)"| Parent
+    P5 -->|"Scoped Session Review"| Teacher
+    Parent -->|"Select planned stories & reminder time"| P5
+    P5 <-->|"Save learning plan & reminder config"| D5
+    P5 -->|"Schedule local notification"| NotifySvc
+    NotifySvc -->|"Caregiver reminder alert"| Parent
+
+    %% Flows - Process 6
+    Parent -->|"Situational goal input / Feedback submission"| P6
+    D2 -->|"Check AI history sharing consent"| P6
+    D3 -->|"Valid library catalog metadata"| P6
+    P6 -->|"Anonymized goal & skill query"| AISvc
+    AISvc -->|"Recommended story IDs & explanations"| P6
+    P6 -->|"Explainable suggestions & alternative options"| Parent
+    P6 -->|"Queue feedback report"| D5

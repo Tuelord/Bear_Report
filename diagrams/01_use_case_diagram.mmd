@@ -1,0 +1,66 @@
+flowchart LR
+    %% Actors
+    Child(["Child Learner\n(PERS01 - Minh)"])
+    Parent(["Parent\n(PERS02 - Ms. An)"])
+    Teacher(["Support Teacher\n(PERS03 - Ms. Mai)"])
+    AISpeech(["AI & Speech Services\n(TTS / STT / AI API)"])
+
+    subgraph BearBuddy ["Bear Buddy Application System"]
+        direction TB
+
+        subgraph ChildModeGroup ["Child Mode Subsystem (Story Experience)"]
+            UC06(["UC06: View Story Context & Listen to Narration (S08-S09)"])
+            UC07(["UC07: Perform Decision Activity (S10)"])
+            UC08(["UC08: Observe Consequence, View Why & Retry (S11-S12)"])
+            UC09(["UC09: Request Pause (Break) or Need Help (S13)"])
+            UC10(["UC10: Practice Voice Interaction in Scenario E (S24)"])
+        end
+
+        subgraph CaregiverModeGroup ["Caregiver Mode Subsystem (Preparation, Management & Review)"]
+            UC01(["UC01: Complete Onboarding & Caregiver Verification (S01-S02)"])
+            UC02(["UC02: Manage Child Profiles & Teacher Access Links (S03, S20)"])
+            UC03(["UC03: Configure Support & Accessibility Settings (S04, S19)"])
+            UC04(["UC04: Browse, Search & Preview Social Stories (S05-S07)"])
+            UC05(["UC05: Receive Explainable AI Story Suggestions (S18)"])
+            UC11(["UC11: View Session History & Versioned Review (S15-S16)"])
+            UC12(["UC12: Manage Learning Plan & Activity Reminders (S17, S19)"])
+            UC13(["UC13: Manage Privacy, Microphone & Data Consent (S20)"])
+            UC14(["UC14: Access Help/FAQ & Submit Feedback/Issue Reports (S21-S23)"])
+        end
+    end
+
+    %% Actor Associations - Child
+    Child --> UC06
+    Child --> UC07
+    Child --> UC08
+    Child --> UC09
+    Child --> UC10
+
+    %% Actor Associations - Parent
+    Parent --> UC01
+    Parent --> UC02
+    Parent --> UC03
+    Parent --> UC04
+    Parent --> UC05
+    Parent --> UC11
+    Parent --> UC12
+    Parent --> UC13
+    Parent --> UC14
+
+    %% Actor Associations - Teacher (Authorized scope)
+    Teacher --> UC01
+    Teacher --> UC04
+    Teacher --> UC11
+    Teacher --> UC14
+
+    %% External Service Associations
+    UC05 --> AISpeech
+    UC06 --> AISpeech
+    UC10 --> AISpeech
+
+    %% Include / Extend Relationships
+    UC07 -.->|"<<include>>"| UC06
+    UC08 -.->|"<<include>>"| UC07
+    UC09 -.->|"<<extend>>"| UC06
+    UC10 -.->|"<<extend>>"| UC07
+    UC05 -.->|"<<extend>>"| UC04

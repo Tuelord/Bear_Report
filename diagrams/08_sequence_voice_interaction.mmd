@@ -1,0 +1,41 @@
+sequenceDiagram
+    actor Child as Child Learner (PERS01)
+    participant S24 as S24: Scenario E View
+    participant VoiceMod as MOD05: VoiceController
+    participant OSSTT as iOS SFSpeechRecognizer
+    participant Engine as MOD03: StoryEngine
+    participant DB as MOD08: SQLite Database
+
+    Engine->>DB: Check scenario_e_voice_enabled & Microphone Consent
+    DB-->>Engine: Voice configuration state
+    Engine->>S24: Render model phrase + "Tap to Speak" + Parallel Touch Cards
+
+    alt Path 1: Child taps an illustrated Touch Card directly (No speech used)
+        Child->>S24: Tap illustrated Choice Card
+        S24->>Engine: confirmChoiceByTap(option_id)
+        Engine->>DB: Log CHOOSE_TAP (Fully valid completion)
+        Engine->>S24: Advance to Consequence screen (S11)
+    else Path 2: Child taps "Tap to Speak"
+        Child->>S24: Tap "Tap to Speak" button
+        S24->>VoiceMod: startBoundedListening(target_phrase, maxDuration=4s)
+
+        alt Microphone Permission Denied (Microphone Denied)
+            VoiceMod-->>S24: Return Microphone Denied state (S23)
+            S24-->>Child: Highlight parallel Touch Cards for immediate tap selection
+        else On-Device Ephemeral Speech Recognition
+            VoiceMod->>OSSTT: Process audio buffer in RAM (Never saved to disk)
+            OSSTT-->>VoiceMod: Recognized transcript string
+
+            alt Transcript matches target functional keyword
+                VoiceMod-->>S24: Confirm keyword match
+                S24->>Engine: confirmChoiceByVoice(option_id)
+                Engine->>DB: Log CHOOSE_VOICE
+                Engine->>S24: Advance to Consequence screen (S11)
+            else Unclear speech or timeout (Speech Not Recognized)
+                VoiceMod-->>S24: Return Speech Not Recognized state (S23)
+                S24-->>Child: Display "Not heard clearly. Choose a picture or try again"
+                Child->>S24: Tap Touch Card to proceed without friction
+                S24->>Engine: confirmChoiceByTap(option_id)
+            end
+        end
+    end

@@ -1,0 +1,51 @@
+flowchart TB
+    subgraph PresentationLayer ["Presentation Layer (SwiftUI Views - S01..S24)"]
+        direction LR
+        CaregiverUI["Caregiver Mode Views\n(S01-S07, S15-S23)\nOnboarding, Library, Review, Plan, Settings"]
+        GateUI["Caregiver Gate & Role Guard\n(S02, S20)"]
+        ChildUI["Child Mode Views\n(S08-S14, S24)\nOrientation, Context, Decision, Consequence, Why"]
+    end
+
+    subgraph DomainServiceLayer ["Application & Domain Layer (MVVM ViewModels & Modules)"]
+        direction TB
+        MOD01["MOD01: Account, Profile &\nRole Access Manager"]
+        MOD02["MOD02: Versioned Story\nLibrary Repository"]
+        MOD03["MOD03: Interactive Story\nEngine & Loop Controller"]
+        MOD04["MOD04: Accessibility &\nAudio Narration Controller"]
+        MOD05["MOD05: Scenario E Voice &\nTouch Fallback Controller"]
+        MOD06["MOD06: Session Logger,\nReview & Plan Manager"]
+        MOD07["MOD07: Explainable Parent\nAI Coach Service"]
+    end
+
+    subgraph DataInfrastructureLayer ["Local Persistence & Platform Infrastructure Layer"]
+        direction LR
+        MOD08[("MOD08: SQLite3 Local Database\n(Profiles, Versioned Stories,\nSessions, Plans, Audit Logs)")]
+        LocalAssets[("Local Media Bundle\n(Illustrations & Audio)")]
+        OSServices["iOS Native Frameworks\n(AVSpeechSynthesizer,\nSFSpeechRecognizer,\nUNUserNotificationCenter)"]
+        ExternalAI["External AI Recommendation API\n(Grounded & Anonymized Gateway)"]
+    end
+
+    CaregiverUI --> MOD01
+    CaregiverUI --> MOD02
+    CaregiverUI --> MOD06
+    CaregiverUI --> MOD07
+    GateUI --> MOD01
+
+    ChildUI --> MOD03
+    ChildUI --> MOD04
+    ChildUI --> MOD05
+
+    MOD01 --> MOD08
+    MOD02 --> MOD08
+    MOD02 --> LocalAssets
+    MOD03 --> MOD02
+    MOD03 --> MOD04
+    MOD03 --> MOD05
+    MOD03 --> MOD06
+    MOD06 --> MOD08
+    MOD06 --> OSServices
+    MOD04 --> OSServices
+    MOD05 --> OSServices
+    MOD07 --> MOD02
+    MOD07 --> MOD08
+    MOD07 -.->|"HTTPS (Opt-in & Anonymized)"| ExternalAI

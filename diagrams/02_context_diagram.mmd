@@ -1,0 +1,26 @@
+flowchart LR
+    Child["Child Learner\n(PERS01 - Minh)"]
+    Parent["Parent\n(PERS02 - Ms. An)"]
+    Teacher["Support Teacher\n(PERS03 - Ms. Mai)"]
+    System(["0.0\nBear Buddy\nApplication System"])
+    SpeechSvc["On-Device Speech & Audio\n(Native TTS / STT)"]
+    AISvc["AI Recommendation Service\n(Grounded API)"]
+    NotifySvc["OS Notification Service\n(Local Reminders)"]
+
+    Child -->|"Tap choices, Replay, Retry,\nPause/Need Help, Short speech (Scenario E)"| System
+    System -->|"Contextual illustrations, Short text, Narration,\nAction -> Reaction -> Why feedback"| Child
+
+    Parent -->|"Profile setup, Accessibility settings,\nStory selection, Access links, AI goals, Reminders"| System
+    System -->|"Story preview, Explainable AI suggestions,\nVersioned session review, Consent status"| Parent
+
+    Teacher -->|"Link verification, Story selection & preview,\nSession launch, Observational review"| System
+    System -->|"Authorized profiles, Story preview,\nScoped session review records"| Teacher
+
+    System -->|"Narration text / Ephemeral audio buffer (Scenario E)"| SpeechSvc
+    SpeechSvc -->|"Single-stream audio / Keyword match result"| System
+
+    System -->|"Anonymized situational goal & skill tags"| AISvc
+    AISvc -->|"Recommended story IDs & Match reasons"| System
+
+    System -->|"Scheduled reminder time & days"| NotifySvc
+    NotifySvc -->|"Caregiver reminder notifications"| Parent

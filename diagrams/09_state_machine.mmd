@@ -1,0 +1,32 @@
+stateDiagram-v2
+    [*] --> CaregiverPreview : Caregiver selects story (S07)
+    CaregiverPreview --> ChildOrientation : Tap "Start" (If first session - S08)
+    CaregiverPreview --> ContextPresentation : Tap "Start" (S09)
+    ChildOrientation --> ContextPresentation : Child ready (S09)
+
+    state ChildModeActive {
+        ContextPresentation : S09 - Story Context & Social Cues\n(Single-stream narration)
+        DecisionActivity : S10 / S24 - Decision Activity\n(Tap Choice Card or Bounded Voice + Fallback)
+        ConsequenceView : S11 - Character Reaction\n(Action -> Reaction)
+        WhyExplanation : S12 - Contextual Why Explanation\n(Reaction -> Why)
+        PausedOrHelp : S13 - Paused / Need Help State\n(Halt audio, persist step index)
+
+        ContextPresentation --> DecisionActivity : Tap Next
+        DecisionActivity --> ConsequenceView : Select option (Tap / Voice)
+        ConsequenceView --> WhyExplanation : Advance to explanation
+
+        WhyExplanation --> WhyExplanation : Tap "Replay" (Listen again)
+        WhyExplanation --> DecisionActivity : Tap "Try Another Way" (Retry)
+        WhyExplanation --> ContextPresentation : Tap "Next" (More scenes remain)
+
+        ContextPresentation --> PausedOrHelp : Tap Pause / Need Help
+        DecisionActivity --> PausedOrHelp : Tap Pause / Need Help
+        WhyExplanation --> PausedOrHelp : Tap Pause / Need Help
+        PausedOrHelp --> ContextPresentation : Resume at paused context scene
+        PausedOrHelp --> DecisionActivity : Resume at paused decision step
+    }
+
+    WhyExplanation --> SessionCompleted : Final scene completed (S14)
+    PausedOrHelp --> CaregiverReview : Caregiver authenticates to end early
+    SessionCompleted --> CaregiverReview : Caregiver authenticates & reviews (S16)
+    CaregiverReview --> [*]

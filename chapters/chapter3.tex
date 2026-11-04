@@ -1,0 +1,572 @@
+\chapter{Requirement Analysis}
+
+
+This chapter presents the formal requirement analysis specification for the \textbf{Bear Buddy} application. It builds directly upon the problem statement in Chapter 1, the developmental capability profiles and user needs (\texttt{UN01}–\texttt{UN12}) in Chapter 2, and establishes a traceable foundation for story content design in Chapter 4, UI-UX design decisions (\texttt{DD1}–\texttt{DD40}, screens \texttt{S01}–\texttt{S24}) in Chapter 5, and system architecture in Chapter 6.
+
+
+\section{Stakeholders and Roles}
+
+
+The Bear Buddy system involves multiple stakeholder groups who either directly interact with the application or participate in content authoring, clinical/educational review, and technical operation. Role permissions are strictly separated to safeguard children's data privacy and prevent administrative complexity from leaking into the child's learning flow (\texttt{DD31}, \texttt{DD32}).
+
+
+\subsection{Primary Stakeholders (Direct Users)}
+
+
+\noindent\begin{xltabular}{\textwidth}{|p{2.0cm}|p{3.2cm}|X|p{2.8cm}|}
+\hline
+\textbf{Stakeholder} & \textbf{Persona Reference} & \textbf{System Role} & \textbf{Permissions and Access Boundaries} \\ \hline
+\endhead
+\textbf{Child Learner (Primary User)} & \texttt{PERS01} Minh & Direct participant who experiences social stories and practices interactive activities in \textbf{Child Mode}. & Accesses only the story session launched by a caregiver; views scenes, listens to narration, selects options, uses \texttt{Replay}, \texttt{Retry}, \texttt{Pause} (\textit{Take a Break}), or \texttt{Need Help}. Cannot access settings, profile management, or analytics. \\ \hline
+\textbf{Parent (Primary Caregiver)} & \texttt{PERS02} Ms. An & Primary adult companion in \textbf{Caregiver Mode}, responsible for managing the child's profile and deciding learning content. & Full authority to create, edit, and delete child profiles under their guardianship; configures support and accessibility settings; selects stories, uses AI suggestions, reviews session logs, schedules reminders; grants or revokes teacher access links; manages data privacy and microphone permissions. \\ \hline
+\textbf{Support Teacher (Authorized Caregiver)} & \texttt{PERS03} Ms. Mai & Adult companion in classroom or individualized support settings operating under parent-approved profile linking. & Views and operates only the specific child profiles explicitly linked and authorized by the parent; browses the library, previews stories, initiates learning sessions with the child, and reviews session logs within the granted scope. Cannot delete child profiles or re-share profiles with third parties. \\ \hline
+\end{xltabular}
+
+
+
+\subsection{Secondary Stakeholders (Authoring, Operations, and External Services)}
+
+
+\begin{itemize}
+  \item \textbf{Content Authors and Special Education Reviewers}: Responsible for authoring social story scripts, formulating \texttt{Action} $\rightarrow$ \texttt{Reaction} $\rightarrow$ \texttt{Why} explanations, preparing visual illustrations, and recording narration following the workflow in Section 2.2.3. Every published story release must carry an explicit version identifier (\texttt{story\_version}), responsible author/reviewer metadata, and publication date so that historical session logs remain pinned to the exact version the child experienced.
+  \item \textbf{Development and Maintenance Team}: Designs, implements, and maintains the mobile application, the local SQLite database, the interactive story engine, error handling states, and privacy enforcement mechanisms.
+  \item \textbf{Platform and External Services}:
+  \item \textit{On-Device Speech and Audio Services}: Provides single-stream narration playback / Text-to-Speech (\texttt{AVSpeechSynthesizer}) and bounded phrase recognition for Scenario E (\texttt{SFSpeechRecognizer}).
+  \item \textit{AI Recommendation Service}: Receives parent-specified situational goals (and anonymized session history if opted in) to recommend appropriate stories from the existing library alongside transparent explanations.
+  \item \textit{OS Local Notification Service}: Executes scheduled activity reminders configured by the caregiver on the device.
+\end{itemize}
+
+
+
+\section{Functional Requirements}
+
+
+The functional requirements below operationalize the functional scope defined in Section 1.4.2 and the user needs \texttt{UN01}–\texttt{UN12} in Section 2.6.3. Each requirement is prioritized using the \textbf{MoSCoW} method (\texttt{Must}, \texttt{Should}, \texttt{Could}, \texttt{Won't in v1}) and paired with verifiable \textbf{Acceptance Criteria}.
+
+
+\subsection{Onboarding, Accounts, Child Profiles, and Access Control}
+
+
+\begin{footnotesize}
+\noindent\begin{xltabular}{\textwidth}{|c|p{2.2cm}|X|p{2.0cm}|p{2.4cm}|}
+\hline
+\textbf{FR ID} & \textbf{Source Need} & \textbf{Functional Requirement Description} & \textbf{MoSCoW} & \textbf{Acceptance Criteria} \\ \hline
+\endhead
+\textbf{FR01} & \texttt{UN07}, \texttt{UN11} & The system shall provide an Onboarding flow introducing the product's purpose, the separation between \textbf{Caregiver Mode} and \textbf{Child Mode}, and guidance on the adult companion role (\texttt{S01}). & Must & First-time users launching the app must see the segmented introduction screen \texttt{S01}; the guide remains accessible at any time via the Help section (\texttt{S21}). \\ \hline
+\textbf{FR02} & \texttt{UN08}, \texttt{UN11} & The system shall support caregiver authentication or a protected local \texttt{Caregiver Gate} to isolate management functions from the child's interface (\texttt{S02}). & Must & Every transition from \texttt{Child Mode} to \texttt{Caregiver Mode} or access to data/privacy settings (\texttt{S19}, \texttt{S20}) requires passing caregiver verification; a single tap by a child cannot open management screens. \\ \hline
+\textbf{FR03} & \texttt{UN06}, \texttt{UN08}, \texttt{UN11} & The system shall allow parents to create, edit, and select child profiles with minimal personal data (display name/nickname, avatar) and functional support preferences (\texttt{S03}, \texttt{S04}). & Must & Profile creation forms do not require sensitive medical records or diagnostic ASD scores; profiles save to SQLite and display the active profile indicator on \texttt{Caregiver Home} (\texttt{S05}). \\ \hline
+\textbf{FR04} & \texttt{UN08}, \texttt{UN11} & The system shall allow parents to generate an access link or grant permission for a support teacher (\texttt{PERS03}) to access a specific child profile, and revoke that permission at any time (\texttt{S03}, \texttt{S20}). & Should & A teacher account only sees child profiles with an \texttt{ACTIVE} parent-approved link; when a parent revokes access in \texttt{S20}, the profile is immediately removed from the teacher's accessible list. \\ \hline
+\textbf{FR05} & \texttt{UN02}, \texttt{UN03} & The system shall provide a first-time \texttt{Child Orientation} step (\texttt{S08}) featuring a simple practice scene for the child to test tapping a choice, replaying audio, and locating the \texttt{Pause} (\textit{Break}) and \texttt{Need Help} buttons. & Must & On a profile's first session, the child can tap a sample choice, test \texttt{Replay}, and observe the fixed positions of \texttt{Pause} and \texttt{Need Help} before entering the main story. \\ \hline
+\end{xltabular}
+\end{footnotesize}
+
+
+
+\subsection{Situation Library, Search, and Story Preview}
+
+
+\begin{footnotesize}
+\noindent\begin{xltabular}{\textwidth}{|c|p{2.2cm}|X|p{2.0cm}|p{2.4cm}|}
+\hline
+\textbf{FR ID} & \textbf{Source Need} & \textbf{Functional Requirement Description} & \textbf{MoSCoW} & \textbf{Acceptance Criteria} \\ \hline
+\endhead
+\textbf{FR06} & \texttt{UN07} & The system shall organize the social story library by situational categories (waiting for a turn, meeting new friends, asking to join play, asking for help, preparing for new events) on \texttt{S06}. & Must & Caregivers can browse stories by category tabs; each \texttt{Story Card} clearly displays the title, category, primary interaction type, and estimated step count. \\ \hline
+\textbf{FR07} & \texttt{UN07} & The system shall allow caregivers to search stories by keyword and filter by target skill or interaction modality (\texttt{S06}). & Must & Keyword searches (with or without diacritics) return matching stories within $< 500\text{ ms}$; if no match exists, the system displays the \texttt{Empty Search} state (\texttt{S23}) with a one-tap filter reset button. \\ \hline
+\textbf{FR08} & \texttt{UN07} & The system shall display a \textit{Most Popular Social Stories} section with a transparent metric definition (based on completed sessions over the last 30 days) and clearly distinguish seeded demo items (\texttt{[Demo Seed]} / \texttt{[Sample Pick]}). & Should & When real usage statistics are unavailable, featured stories must display the \texttt{[Sample Pick]} badge rather than fabricated view counts. \\ \hline
+\textbf{FR09} & \texttt{UN01}, \texttt{UN07}, \texttt{UN08} & The system shall display a \texttt{Story Details and Preview} screen (\texttt{S07}) showing the social goal, context summary, interaction modalities, expected support level, and content version code (\texttt{story\_version}). & Must & Caregivers can preview all scenes and \texttt{Why} explanations on \texttt{S07} before tapping \texttt{Start with Child} to enter \texttt{Child Mode}. \\ \hline
+\end{xltabular}
+\end{footnotesize}
+
+
+
+\subsection{Story Player and Interactive Learning in Child Mode}
+
+
+\begin{footnotesize}
+\noindent\begin{xltabular}{\textwidth}{|c|p{2.2cm}|X|p{2.0cm}|p{2.4cm}|}
+\hline
+\textbf{FR ID} & \textbf{Source Need} & \textbf{Functional Requirement Description} & \textbf{MoSCoW} & \textbf{Acceptance Criteria} \\ \hline
+\endhead
+\textbf{FR10} & \texttt{UN01}, \texttt{UN02}, \texttt{UN03} & The system shall present each story scene (\texttt{Story Context} - \texttt{S09}) using focused illustrations, short concrete sentences, and optional audio narration to clarify \textit{who is involved, what is happening, and which social cues matter}. & Must & Each \texttt{S09} screen presents a single primary task/scene (\texttt{DD1}) and displays a truthful \texttt{Progress Indicator} reflecting the active story path (\texttt{DD4}). \\ \hline
+\textbf{FR11} & \texttt{UN02}, \texttt{UN06} & The system shall allow playing, pausing, and replaying (\texttt{Replay}) narration for the current scene while automatically stopping prior audio when changing scenes or re-triggering playback (\texttt{S09}–\texttt{S12}). & Must & Rapidly tapping \texttt{Replay} never causes overlapping audio streams (\texttt{DD23}); advancing to a new scene immediately halts the previous scene's audio. \\ \hline
+\textbf{FR12} & \texttt{UN04} & The system shall support decision activities (\texttt{Decision Activity} - \texttt{S10}) via single-tap selection on illustrated \texttt{Choice Cards} paired with short text labels. & Must & Each decision point presents 2 to 3 choices; for sequence ordering tasks, the system provides a single-tap \texttt{Tap-to-Order} mechanism alongside or instead of drag-and-drop (\texttt{DD26}, \texttt{DD27}). \\ \hline
+\textbf{FR13} & \texttt{UN05} & Following each key decision, the system shall display the character's reaction (\texttt{Consequence} - \texttt{S11}) followed by the contextual reason (\texttt{Explanation} - \texttt{S12}), explicitly modeling \texttt{Action} $\rightarrow$ \texttt{Reaction} $\rightarrow$ \texttt{Why}. & Must & Feedback never uses binary \textit{"Correct/Wrong"} labels or harsh error buzzers as primary feedback (\texttt{DD17}); it always illustrates how characters react and explains why within that specific scenario. \\ \hline
+\textbf{FR14} & \texttt{UN05} & The system shall allow the child to replay the explanation (\texttt{Replay}), return to try a different choice (\texttt{Retry}) without penalty, or tap \texttt{Next} to continue (\texttt{S12}). & Must & Selecting \texttt{Try Another Way} (\texttt{Retry}) on \texttt{S12} returns the child to \texttt{S10} to explore other options; the session log records all attempts descriptively without marking retries as failures (\texttt{DD18}, \texttt{DD19}). \\ \hline
+\textbf{FR15} & \texttt{UN06}, \texttt{UN10} & The system shall provide persistent \texttt{Pause} (\textit{Take a Break}) and \texttt{Need Help} controls in fixed screen positions throughout \texttt{Child Mode} (\texttt{S08}–\texttt{S13}). & Must & Tapping \texttt{Pause} or \texttt{Need Help} stops active audio, opens a calm pause/assistance state (\texttt{S13}) with brief guidance for the accompanying adult, and preserves the exact step for resumption (\texttt{DD37}). \\ \hline
+\textbf{FR16} & \texttt{UN03}, \texttt{UN06} & The system shall display a \texttt{Session End} screen (\texttt{S14}) acknowledging participation and offering options to replay the story, rest, or invite the caregiver to return to \texttt{Caregiver Mode}. & Must & Upon reaching \texttt{S14}, the system never auto-plays the next story and never uses countdown timers to pressure continued screen time (\texttt{DD34}). \\ \hline
+\end{xltabular}
+\end{footnotesize}
+
+
+
+\subsection{Parent AI Assistance and Scenario E Voice Interaction}
+
+
+\begin{footnotesize}
+\noindent\begin{xltabular}{\textwidth}{|c|p{2.2cm}|X|p{2.0cm}|p{2.4cm}|}
+\hline
+\textbf{FR ID} & \textbf{Source Need} & \textbf{Functional Requirement Description} & \textbf{MoSCoW} & \textbf{Acceptance Criteria} \\ \hline
+\endhead
+\textbf{FR17} & \texttt{UN07}, \texttt{UN09} & The system shall provide an AI story recommendation feature for parents (\texttt{Parent AI Suggestions} - \texttt{S18}) based on parent-entered situational goals or permitted session history. & Should & Each suggestion on \texttt{S18} must display: (1) a valid story from the library, (2) a clear explanation of why it matches the parent's goal, and (3) an option to dismiss or browse alternative stories (\texttt{DD39}). \\ \hline
+\textbf{FR18} & \texttt{UN04}, \texttt{UN09}, \texttt{UN12} & In Scenario E (\texttt{Voice Interaction Scenario E} - \texttt{S24}), the system shall allow the child to practice speaking a short structured social phrase (e.g., asking to join play or asking for help) with a model phrase prompt and parallel touch-card alternatives. & Could & The child can complete Scenario E on \texttt{S24} by tapping an illustrated choice card without speaking into the microphone (\texttt{DD36}); if speech is unclear, the screen displays \textit{"Not heard clearly. Choose a picture or try again"} (\texttt{S23}). \\ \hline
+\end{xltabular}
+\end{footnotesize}
+
+
+
+\subsection{Session Review, Learning Plan, and Reminders}
+
+
+\begin{footnotesize}
+\noindent\begin{xltabular}{\textwidth}{|c|p{2.2cm}|X|p{2.0cm}|p{2.4cm}|}
+\hline
+\textbf{FR ID} & \textbf{Source Need} & \textbf{Functional Requirement Description} & \textbf{MoSCoW} & \textbf{Acceptance Criteria} \\ \hline
+\endhead
+\textbf{FR19} & \texttt{UN08} & The system shall record and display \texttt{Session History} (\texttt{S15}) and detailed \texttt{Session Review} logs (\texttt{S16}) scoped strictly to the currently selected child profile. & Must & \texttt{S16} displays the session timestamp, exact \texttt{story\_version}, sequence of choices made, explanations viewed, \texttt{Replay}/\texttt{Retry} counts, and any \texttt{Pause}/\texttt{Need Help} requests. \\ \hline
+\textbf{FR20} & \texttt{UN08} & The system shall preserve historical version integrity and present review data as descriptive observations rather than diagnostic ASD scores (\texttt{S16}). & Must & When a story is updated to a newer version, \texttt{S16} for past sessions still renders the exact explanation text from the \texttt{story\_version} experienced in that session; no diagnostic scoring charts are generated (\texttt{DD38}). \\ \hline
+\textbf{FR21} & \texttt{UN07}, \texttt{UN08} & The system shall allow caregivers to add upcoming stories to a \texttt{Learning Plan} (\texttt{S17}) and configure local reminder notifications (\texttt{Settings and Notifications} - \texttt{S19}). & Should & Caregivers can toggle reminders and set notification times; notifications are delivered only for caregiver scheduling and never interrupt an active \texttt{Child Mode} session. \\ \hline
+\end{xltabular}
+\end{footnotesize}
+
+
+
+\subsection{Local Storage, System States, Support, and Privacy}
+
+
+\begin{footnotesize}
+\noindent\begin{xltabular}{\textwidth}{|c|p{2.2cm}|X|p{2.0cm}|p{2.4cm}|}
+\hline
+\textbf{FR ID} & \textbf{Source Need} & \textbf{Functional Requirement Description} & \textbf{MoSCoW} & \textbf{Acceptance Criteria} \\ \hline
+\endhead
+\textbf{FR22} & \texttt{UN08}, \texttt{UN12} & The system shall store child profiles, accessibility configurations, downloaded stories, and session logs locally in a SQLite database. & Must & With network connectivity disabled, caregivers and children can browse local stories, complete full interactive sessions, and review saved session logs from SQLite. \\ \hline
+\textbf{FR23} & \texttt{UN11} & The system shall provide a \texttt{Privacy and Access} screen (\texttt{S20}) enabling parents to control microphone permissions, AI history usage consent, teacher profile links, and session history deletion. & Must & Parents can toggle AI history sharing, revoke microphone/teacher access, and permanently delete a child's session logs or profile on \texttt{S20}. \\ \hline
+\textbf{FR24} & \texttt{UN12} & The system shall provide \texttt{Help, FAQ and Contact} (\texttt{S21}) and a \texttt{Feedback and Issue Report} form (\texttt{S22}) within \texttt{Caregiver Mode}. & Must & The issue report form on \texttt{S22} validates input fields and lets the caregiver explicitly opt in or out of attaching anonymized technical/story-version logs. \\ \hline
+\textbf{FR25} & \texttt{UN12} & The system shall explicitly handle and render all system states (\texttt{System States} - \texttt{S23}): \texttt{Loading}, \texttt{Empty}, \texttt{Offline}, \texttt{Content Load Error}, \texttt{Microphone Denied}, \texttt{Speech Not Recognized}, and \texttt{AI Timeout}. & Must & On content load failure or AI timeout, the system preserves the active child profile context, displays a concise user-friendly message, and provides a clear \texttt{Retry} or local fallback action (\texttt{DD40}). \\ \hline
+\end{xltabular}
+\end{footnotesize}
+
+
+\begin{quote}
+\textbf{Scope Note (Won't have in v1)}: Version 1.0 explicitly \textbf{excludes} open-ended generative AI chat for children, \textbf{excludes} background cloud synchronization without explicit parental consent, and \textbf{excludes} public social networking across families.
+\end{quote}
+
+
+
+\section{Non-Functional Requirements (Emphasizing Accessibility)}
+
+
+To resolve the platform and deployment parameters noted in Sections 1.4.3 and 5.4.1, the target technical baseline is established as follows:
+\begin{itemize}
+  \item \textbf{Target Platform}: Developed and verified primarily for \textbf{iOS / iPadOS} (minimum \textbf{iOS 17.0+}, built with SwiftUI and SQLite3), while maintaining cross-platform design parity with Android (minimum Android 10 / API 29).
+  \item \textbf{Device and Data Model}: Operates as an \textbf{Offline-First Shared Single-Device} application between caregiver and child backed by local SQLite storage; cross-account sharing between parent and teacher is restricted to explicitly authorized child profiles.
+\end{itemize}
+
+
+
+\subsection{Accessibility Requirements (Core Priority)}
+
+
+Requirements \texttt{NFR01}–\texttt{NFR08} translate the UX reasoning framework from Chapter 5 and reference WCAG 2.2 along with Apple Human Interface Guidelines (HIG) and Material Design:
+
+\begin{itemize}
+  \item \textbf{NFR01 (Font Scaling \& Typography Legibility - \texttt{DD8}, \texttt{DD9}, \texttt{DD10})}: Critical text across both \texttt{Child Mode} and \texttt{Caregiver Mode} shall never be baked into raster images. The UI shall support Dynamic Type / font scaling up to \textbf{$200\%$} without text truncation, overlapping elements, or hidden controls. Text shall use a high-legibility sans-serif typeface with full Vietnamese diacritic support and remain static (no scrolling tickers or moving text).
+  \item \textbf{NFR02 (Color Contrast \& Non-Color State Indicators - \texttt{DD24}, \texttt{DD25})}: Normal text shall maintain a contrast ratio of at least \textbf{$4.5:1$} against its background (e.g., primary text \texttt{\#1F2937} on \texttt{\#F7F9FC} or \texttt{\#FFFFFF} exceeds $12:1$; primary action \texttt{\#2D6253} with white text exceeds $6.5:1$). Color shall never be the sole indicator of selection, focus, or error states; borders, icons, or text labels must accompany color changes.
+  \item \textbf{NFR03 (Generous Touch Targets \& Multi-Touch Forgiveness - \texttt{DD28}, \texttt{DD29})}: All interactive controls (buttons, \texttt{Choice Cards}, \texttt{Replay}, \texttt{Pause}, \texttt{Need Help}) shall provide an active hit target of at least \textbf{$44 \times 44\text{ pt}$} on iOS (or \textbf{$48 \times 48\text{ dp}$} on Android). Child-facing choice cards shall target a minimum height of \textbf{$\ge 64\text{ pt}$} with \textbf{$\ge 8\text{ pt}$} spacing between adjacent targets, and ignore accidental multi-finger touches or rapid double-taps.
+  \item \textbf{NFR04 (Motor Gesture Simplicity - \texttt{DD26}, \texttt{DD27}, \texttt{DD30})}: \textbf{$100\%$} of core story progression and decision activities shall be completable using a \textbf{Single Tap}. The system shall never require fine-motor drag-and-drop, double-tapping, multi-finger pinching, or device tilting/shaking (accelerometer) to complete a story.
+  \item \textbf{NFR05 (Sensory Control for Audio \& Motion - \texttt{DD21}, \texttt{DD22}, \texttt{DD23})}: The audio engine shall enforce a strict single-stream policy preventing overlapping narration. Caregivers and users can mute audio, adjust narration speech rate, and enable \textbf{Reduce Motion} to replace transition animations with calm instantaneous or soft-fade state changes.
+  \item \textbf{NFR06 (Multimodal Parity \& Non-Mandatory Speech - \texttt{DD20}, \texttt{DD36})}: Every story scene shall pair clear visual illustration, concise text, and controllable narration. No step in the application may block progression if a child does not speak into the microphone; a first-class touch alternative must always be present on screen.
+  \item \textbf{NFR07 (Assistive Technology Compatibility)}: All interactive controls and primary scene illustrations shall expose semantic accessibility metadata (\texttt{accessibilityLabel}, \texttt{accessibilityHint}, \texttt{accessibilityRole}), while decorative background elements are marked hidden (\texttt{accessibilityHidden}) to prevent screen reader clutter.
+  \item \textbf{NFR08 (User-Controlled Pacing - \texttt{DD34}, \texttt{DD37})}: The system shall impose \textbf{zero countdown timers} or timed response limits in \texttt{Child Mode}. Children can pause, ask for help, or replay narration as many times as needed.
+\end{itemize}
+
+
+
+\subsection{Usability and Role Separation Requirements}
+
+
+\begin{itemize}
+  \item \textbf{NFR09 (Shallow Navigation \& Single Primary Task - \texttt{DD1}, \texttt{DD5}, \texttt{DD6})}: Navigation depth within \texttt{Child Mode} shall not exceed 2 levels from session launch. Each screen shall present only one primary cognitive task and avoid disruptive modal popups during a story.
+  \item \textbf{NFR10 (Positional Control Consistency - \texttt{DD2}, \texttt{DD3})}: Core story controls (\texttt{Back}, \texttt{Replay}, \texttt{Next}, \texttt{Pause}, \texttt{Need Help}) shall maintain consistent relative positions and visual affordances across all story scenes.
+\end{itemize}
+
+
+
+\subsection{Performance and Reliability Requirements}
+
+
+\begin{itemize}
+  \item \textbf{NFR11 (Interaction Response Latency - \texttt{DD24})}: Tapping any choice card or control button shall produce immediate visual/audio state feedback within \textbf{$< 100\text{ ms}$}; local SQLite queries and scene transitions shall complete within \textbf{$< 300\text{ ms}$}.
+  \item \textbf{NFR12 (Offline-First Persistence \& State Recovery - \texttt{DD40})}: All bundled/downloaded stories and session logging functions shall operate \textbf{$100\%$ offline}. If the app is backgrounded, interrupted, or paused (\texttt{S13}), the current session state shall be committed immediately to SQLite to prevent data loss.
+  \item \textbf{NFR13 (Graceful Degradation)}: If the external AI recommendation service or speech recognizer fails or exceeds a \textbf{$5\text{-second}$} timeout, the system shall seamlessly fall back to local rule-based filtering or touch selection without crashing (target crash-free session rate $> 99.5\%$).
+\end{itemize}
+
+
+
+\subsection{Privacy, Security, and Maintainability Requirements}
+
+
+\begin{itemize}
+  \item \textbf{NFR14 (Child Data Minimization \& Ephemeral Voice Processing - \texttt{P11}, \texttt{DD33})}: The system shall never persist raw audio recordings of a child's voice to disk or external servers during Scenario E; audio buffers are processed in volatile memory for phrase matching and discarded immediately.
+  \item \textbf{NFR15 (Anonymized External AI Requests)}: When querying the AI recommendation service (\texttt{S18}), the system shall strip all personal identifiers (\texttt{child\_id}, \texttt{nickname}, free-text personal notes) and transmit only anonymized situational goal tags and story IDs.
+  \item \textbf{NFR16 (Modular Architecture \& Content Versioning)}: The codebase shall maintain strict separation between Presentation (\texttt{Views}), State/Repository (\texttt{AppStore}, \texttt{StoryRepository}, \texttt{LocalDatabase}), Domain Models (\texttt{Models}), and Support Controllers (\texttt{Support}), with immutable \texttt{story\_version} tracking for all historical session records.
+\end{itemize}
+
+
+
+\section{Use Case Diagram and Use Case Specifications}
+
+
+The Use Case diagram below models the functional interactions between the three human actors (\texttt{PERS01} Child Learner, \texttt{PERS02} Parent, \texttt{PERS03} Support Teacher) and supporting services within the \textbf{Bear Buddy} system boundary.
+
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[height=0.86\textheight, keepaspectratio]{figures/use_case_diagram.png}
+\caption{Use Case Diagram of the Bear Buddy System}
+\label{fig:use_case_diagram}
+\end{figure}
+
+
+
+\subsection{Use Case Summary Table}
+
+
+\begin{footnotesize}
+\noindent\begin{xltabular}{\textwidth}{|c|p{2.2cm}|X|p{2.0cm}|p{2.4cm}|}
+\hline
+\textbf{UC ID} & \textbf{Use Case Name} & \textbf{Primary Actor(s)} & \textbf{Linked FRs} & \textbf{Associated Screens (\texttt{S01}–\texttt{S24})} \\ \hline
+\endhead
+\textbf{UC01} & Complete Onboarding and Caregiver Verification & Parent, Teacher & \texttt{FR01}, \texttt{FR02} & \texttt{S01}, \texttt{S02}, \texttt{S05} \\ \hline
+\textbf{UC02} & Manage Child Profiles and Teacher Access Links & Parent & \texttt{FR03}, \texttt{FR04} & \texttt{S03}, \texttt{S05}, \texttt{S20} \\ \hline
+\textbf{UC03} & Configure Support and Accessibility Settings & Parent & \texttt{FR03}, \texttt{NFR01}–\texttt{NFR08} & \texttt{S04}, \texttt{S19} \\ \hline
+\textbf{UC04} & Browse, Search, and Preview Social Stories & Parent, Teacher & \texttt{FR06}–\texttt{FR09} & \texttt{S05}, \texttt{S06}, \texttt{S07}, \texttt{S23} \\ \hline
+\textbf{UC05} & Receive Explainable AI Story Suggestions & Parent & \texttt{FR17}, \texttt{FR25} & \texttt{S18}, \texttt{S07}, \texttt{S23} \\ \hline
+\textbf{UC06} & View Story Context and Listen to Narration & Child Learner & \texttt{FR05}, \texttt{FR10}, \texttt{FR11} & \texttt{S08}, \texttt{S09}, \texttt{S14} \\ \hline
+\textbf{UC07} & Perform Decision Activity & Child Learner & \texttt{FR12} & \texttt{S10} \\ \hline
+\textbf{UC08} & Observe Consequence, View Explanation, and Retry & Child Learner & \texttt{FR13}, \texttt{FR14}, \texttt{FR16} & \texttt{S11}, \texttt{S12}, \texttt{S14} \\ \hline
+\textbf{UC09} & Request Pause (Take a Break) or Need Help & Child Learner, Caregiver & \texttt{FR15} & \texttt{S08}–\texttt{S13} \\ \hline
+\textbf{UC10} & Practice Voice Interaction in Scenario E & Child Learner & \texttt{FR18}, \texttt{FR25} & \texttt{S24}, \texttt{S10}, \texttt{S23} \\ \hline
+\textbf{UC11} & View Session History and Versioned Review & Parent, Teacher & \texttt{FR19}, \texttt{FR20}, \texttt{FR22} & \texttt{S15}, \texttt{S16} \\ \hline
+\textbf{UC12} & Manage Learning Plan and Activity Reminders & Parent & \texttt{FR21} & \texttt{S17}, \texttt{S19}, \texttt{S23} \\ \hline
+\textbf{UC13} & Manage Privacy, Microphone, and Data Consent & Parent & \texttt{FR23} & \texttt{S20} \\ \hline
+\textbf{UC14} & Access Help/FAQ and Submit Feedback/Issue Reports & Parent, Teacher & \texttt{FR24}, \texttt{FR25} & \texttt{S21}, \texttt{S22}, \texttt{S23} \\ \hline
+\end{xltabular}
+\end{footnotesize}
+
+
+
+\subsection{Detailed Use Case Specification Tables}
+
+
+
+\subsubsection{UC01 — Complete Onboarding and Caregiver Verification}
+
+
+\noindent\begin{xltabular}{\textwidth}{|p{4.0cm}|X|}
+\hline
+\textbf{Specification Field} & \textbf{Details} \\ \hline
+\endhead
+\textbf{Use Case ID \& Name} & \textbf{UC01 — Complete Onboarding and Caregiver Verification} \\ \hline
+\textbf{Primary Actors} & Parent (\texttt{PERS02}), Support Teacher (\texttt{PERS03}) \\ \hline
+\textbf{Description} & The adult user reviews the application's purpose, understands the companion role, and authenticates to enter \texttt{Caregiver Mode}. \\ \hline
+\textbf{Preconditions} & The application is launched on the mobile device. \\ \hline
+\textbf{Postconditions} & Onboarding is completed and the caregiver is granted access to \texttt{Caregiver Home} (\texttt{S05}). \\ \hline
+\textbf{Main Flow} & 1. The adult opens the Bear Buddy application. \newline 2. The system displays the \texttt{Introduction} screen (\texttt{S01}) explaining situational preparation, the separation between Caregiver Mode and Child Mode, and the scope of review logs. \newline 3. The user proceeds to \texttt{Account Access} (\texttt{S02}) and signs in or completes the \texttt{Caregiver Gate} PIN/biometric verification. \newline 4. The system validates credentials and opens \texttt{Caregiver Home} (\texttt{S05}). \\ \hline
+\textbf{Alternative Flows} & $\bullet$ \textbf{3a. Switching from Child Mode to Caregiver Mode}: The adult triggers the mode switch control and completes the \texttt{Caregiver Gate}; if verification fails or is triggered accidentally by a child's tap, the system remains safely in \texttt{Child Mode} (\texttt{DD31}, \texttt{DD32}). \\ \hline
+\end{xltabular}
+
+
+
+\subsubsection{UC02 — Manage Child Profiles and Teacher Access Links}
+
+
+\noindent\begin{xltabular}{\textwidth}{|p{4.0cm}|X|}
+\hline
+\textbf{Specification Field} & \textbf{Details} \\ \hline
+\endhead
+\textbf{Use Case ID \& Name} & \textbf{UC02 — Manage Child Profiles and Teacher Access Links} \\ \hline
+\textbf{Primary Actor} & Parent (\texttt{PERS02}) \\ \hline
+\textbf{Description} & The parent creates or edits a child's profile and manages granting or revoking profile access links for a support teacher (\texttt{PERS03}). \\ \hline
+\textbf{Preconditions} & The parent is authenticated in \texttt{Caregiver Mode}. \\ \hline
+\textbf{Postconditions} & The child profile and teacher access link permissions are persisted in SQLite. \\ \hline
+\textbf{Main Flow} & 1. The parent opens \texttt{Child Profile and Linking} (\texttt{S03}). \newline 2. The parent enters the child's display nickname, avatar, and functional communication/support preferences. \newline 3. The parent optionally generates an access link granting a support teacher (\texttt{PERS03}) permission to view and run sessions for this profile. \newline 4. The system validates inputs, saves the record to SQLite, and sets the profile as active on \texttt{Caregiver Home} (\texttt{S05}). \\ \hline
+\textbf{Alternative Flows} & $\bullet$ \textbf{2a. Missing required nickname}: The system highlights the specific field with a friendly inline validation message (\texttt{Invalid Input} - \texttt{S23}) while preserving other entered values. \newline $\bullet$ \textbf{3a. Revoking teacher access}: The parent navigates to \texttt{S20} or \texttt{S03} and revokes the link; the teacher's access is terminated immediately. \\ \hline
+\end{xltabular}
+
+
+
+\subsubsection{UC03 — Configure Support and Accessibility Settings}
+
+
+\noindent\begin{xltabular}{\textwidth}{|p{4.0cm}|X|}
+\hline
+\textbf{Specification Field} & \textbf{Details} \\ \hline
+\endhead
+\textbf{Use Case ID \& Name} & \textbf{UC03 — Configure Support and Accessibility Settings} \\ \hline
+\textbf{Primary Actor} & Parent (\texttt{PERS02}) \\ \hline
+\textbf{Description} & The parent customizes font scaling, contrast, narration playback, motion reduction, and interaction modalities tailored to the child's sensory and motor profile. \\ \hline
+\textbf{Preconditions} & A valid child profile is selected in \texttt{Caregiver Mode}. \\ \hline
+\textbf{Postconditions} & Accessibility settings are saved to the child's profile and applied across all story sessions. \\ \hline
+\textbf{Main Flow} & 1. The parent opens \texttt{Accessibility Setup} (\texttt{S04}) during onboarding or from \texttt{Settings} (\texttt{S19}). \newline 2. The parent adjusts the font scale factor (up to $200\%$), toggles auto-narration, sets speech rate, enables Reduce Motion, and configures Scenario E voice participation. \newline 3. The system renders a live preview of the selected settings. \newline 4. The parent saves the configuration to the \texttt{accessibility\_settings} table in SQLite. \\ \hline
+\textbf{Alternative Flows} & $\bullet$ \textbf{2a. Reset to Calm Defaults}: The parent selects "Restore Default Settings" to revert all parameters to the baseline sensory-friendly configuration. \\ \hline
+\end{xltabular}
+
+
+
+\subsubsection{UC04 — Browse, Search, and Preview Social Stories}
+
+
+\noindent\begin{xltabular}{\textwidth}{|p{4.0cm}|X|}
+\hline
+\textbf{Specification Field} & \textbf{Details} \\ \hline
+\endhead
+\textbf{Use Case ID \& Name} & \textbf{UC04 — Browse, Search, and Preview Social Stories} \\ \hline
+\textbf{Primary Actors} & Parent (\texttt{PERS02}), Support Teacher (\texttt{PERS03}) \\ \hline
+\textbf{Description} & The caregiver searches or filters the story library, inspects learning goals and version metadata, and previews all scenes before starting a session with the child. \\ \hline
+\textbf{Preconditions} & The caregiver is in \texttt{Caregiver Mode} with an active child profile selected. \\ \hline
+\textbf{Postconditions} & A story is selected and launched into \texttt{Child Mode}. \\ \hline
+\textbf{Main Flow} & 1. The caregiver opens \texttt{Story Library} (\texttt{S06}) and browses by category, popular stories, or keyword search. \newline 2. The caregiver selects a story card to open \texttt{Story Details and Preview} (\texttt{S07}). \newline 3. The system displays the social goal, context summary, interaction types, \texttt{story\_version}, and allows the caregiver to step through a full preview of the scenes and explanations. \newline 4. The caregiver taps \texttt{Start with Child} to transition the app into \texttt{Child Mode} (\texttt{S08}/\texttt{S09}). \\ \hline
+\textbf{Alternative Flows} & $\bullet$ \textbf{1a. No matching search results}: The system displays the \texttt{Empty Search} state (\texttt{S23}) with a button to clear filters. \newline $\bullet$ \textbf{3a. Content load failure}: The system displays \texttt{Content Load Error} (\texttt{S23}), preserves the active profile context, and provides a \texttt{Retry} button. \\ \hline
+\end{xltabular}
+
+
+
+\subsubsection{UC05 — Receive Explainable AI Story Suggestions}
+
+
+\noindent\begin{xltabular}{\textwidth}{|p{4.0cm}|X|}
+\hline
+\textbf{Specification Field} & \textbf{Details} \\ \hline
+\endhead
+\textbf{Use Case ID \& Name} & \textbf{UC05 — Receive Explainable AI Story Suggestions} \\ \hline
+\textbf{Primary Actors} & Parent (\texttt{PERS02}), AI Recommendation Service \\ \hline
+\textbf{Description} & The parent specifies an upcoming situation or learning goal and receives grounded story recommendations from the library accompanied by clear explanations. \\ \hline
+\textbf{Preconditions} & The parent is on the \texttt{Parent AI Suggestions} screen (\texttt{S18}). \\ \hline
+\textbf{Postconditions} & Recommended stories with explanations are displayed; the parent retains full authority to select or ignore them. \\ \hline
+\textbf{Main Flow} & 1. The parent opens \texttt{S18} and selects or enters a situational goal (e.g., preparing for a doctor visit or joining peers at recess). \newline 2. The system verifies AI data consent (\texttt{S20}) and sends an anonymized request to the recommendation module. \newline 3. The system displays matching stories from the library along with a transparent explanation of why each story fits the goal (\texttt{DD39}). \newline 4. The parent taps a recommended story to preview it (\texttt{S07}) or chooses a different story from the library. \\ \hline
+\textbf{Alternative Flows} & $\bullet$ \textbf{2a. Device Offline or AI Timeout}: The system displays \texttt{AI Timeout or Unavailable} (\texttt{S23}) and immediately provides deterministic rule-based suggestions from the local SQLite library. \\ \hline
+\end{xltabular}
+
+
+
+\subsubsection{UC06 — View Story Context and Listen to Narration}
+
+
+\noindent\begin{xltabular}{\textwidth}{|p{4.0cm}|X|}
+\hline
+\textbf{Specification Field} & \textbf{Details} \\ \hline
+\endhead
+\textbf{Use Case ID \& Name} & \textbf{UC06 — View Story Context and Listen to Narration} \\ \hline
+\textbf{Primary Actors} & Child Learner (\texttt{PERS01}), Native TTS Service \\ \hline
+\textbf{Description} & The child views the illustrated scene, reads short concrete text, and listens to audio narration to understand who is present, what is happening, and which social cues are relevant. \\ \hline
+\textbf{Preconditions} & A story session has been launched into \texttt{Child Mode}. \\ \hline
+\textbf{Postconditions} & The child receives the situational context (\texttt{Understand}) and is ready for the decision activity. \\ \hline
+\textbf{Main Flow} & 1. If this is the child's first session, the system presents the brief \texttt{Child Orientation} screen (\texttt{S08}). \newline 2. The system displays \texttt{Story Context} (\texttt{S09}) with focused character illustration, 1–2 short sentences, and a progress indicator. \newline 3. The system plays the narration via \texttt{SpeechController} according to the profile's audio settings. \newline 4. The child taps \texttt{Replay} to listen again or taps \texttt{Next} to proceed to the activity step. \\ \hline
+\textbf{Alternative Flows} & $\bullet$ \textbf{4a. Rapid repeated taps on Replay}: The audio controller stops the active utterance and restarts cleanly from the beginning without overlapping audio streams (\texttt{DD23}). \\ \hline
+\end{xltabular}
+
+
+
+\subsubsection{UC07 — Perform Decision Activity}
+
+
+\noindent\begin{xltabular}{\textwidth}{|p{4.0cm}|X|}
+\hline
+\textbf{Specification Field} & \textbf{Details} \\ \hline
+\endhead
+\textbf{Use Case ID \& Name} & \textbf{UC07 — Perform Decision Activity} \\ \hline
+\textbf{Primary Actor} & Child Learner (\texttt{PERS01}) \\ \hline
+\textbf{Description} & The child predicts and selects a behavioral response in the scenario using single-tap interaction on illustrated options. \\ \hline
+\textbf{Preconditions} & The child has viewed the story context (\texttt{S09}) and reached \texttt{Decision Activity} (\texttt{S10}). \\ \hline
+\textbf{Postconditions} & The child's choice is logged in the session record and the flow advances to \texttt{Consequence} (\texttt{S11}). \\ \hline
+\textbf{Main Flow} & 1. The system displays a clear situational prompt and 2 to 3 \texttt{Choice Cards} with distinct illustrations and short labels (\texttt{S10}). \newline 2. The child may tap the speaker icon on any card to hear that option read aloud. \newline 3. The child taps a choice card (or taps cards in sequence 1 $\rightarrow$ 2 $\rightarrow$ 3 for \texttt{Tap-to-Order} activities). \newline 4. The system immediately updates the visual selection state (\texttt{DD24}) and transitions to the \texttt{Consequence} screen (\texttt{S11}). \\ \hline
+\textbf{Alternative Flows} & $\bullet$ \textbf{3a. Accidental multi-touch or rapid repeated taps}: The system registers only the first valid touch target and locks duplicate submissions during transition (\texttt{DD29}). \\ \hline
+\end{xltabular}
+
+
+
+\subsubsection{UC08 — Observe Consequence, View Explanation, and Retry}
+
+
+\noindent\begin{xltabular}{\textwidth}{|p{4.0cm}|X|}
+\hline
+\textbf{Specification Field} & \textbf{Details} \\ \hline
+\endhead
+\textbf{Use Case ID \& Name} & \textbf{UC08 — Observe Consequence, View Explanation, and Retry} \\ \hline
+\textbf{Primary Actor} & Child Learner (\texttt{PERS01}) \\ \hline
+\textbf{Description} & The child observes how characters in the story react to the chosen action, hears the explanation of why (\texttt{Action} $\rightarrow$ \texttt{Reaction} $\rightarrow$ \texttt{Why}), and chooses whether to replay, retry another option, or continue. \\ \hline
+\textbf{Preconditions} & The child has selected an option on \texttt{S10} (or \texttt{S24}). \\ \hline
+\textbf{Postconditions} & The child views the explanation and either explores another branch or completes the story at \texttt{S14}. \\ \hline
+\textbf{Main Flow} & 1. The system renders \texttt{Consequence} (\texttt{S11}), illustrating the character's specific reaction to the selected action. \newline 2. The system presents \texttt{Explanation and Retry} (\texttt{S12}), explaining why the character reacted that way in this context. \newline 3. The system provides three clear actions: \texttt{Replay} (listen again), \texttt{Try Another Way} (\texttt{Retry}), or \texttt{Next} (continue). \newline 4. Upon completing the final scene, the system displays \texttt{Session End} (\texttt{S14}) acknowledging the child's participation. \\ \hline
+\textbf{Alternative Flows} & $\bullet$ \textbf{3a. Child selects \texttt{Try Another Way} (\texttt{Retry})}: The system returns to \texttt{S10} so the child can explore an alternative choice without penalty or negative judgment (\texttt{DD18}). \\ \hline
+\end{xltabular}
+
+
+
+\subsubsection{UC09 — Request Pause (Take a Break) or Need Help}
+
+
+\noindent\begin{xltabular}{\textwidth}{|p{4.0cm}|X|}
+\hline
+\textbf{Specification Field} & \textbf{Details} \\ \hline
+\endhead
+\textbf{Use Case ID \& Name} & \textbf{UC09 — Request Pause (Take a Break) or Need Help} \\ \hline
+\textbf{Primary Actors} & Child Learner (\texttt{PERS01}), Caregiver (\texttt{PERS02}/\texttt{PERS03}) \\ \hline
+\textbf{Description} & The child proactively taps \texttt{Pause} (\textit{Take a Break}) or \texttt{Need Help} at any point during a session when feeling tired, overwhelmed, or needing adult support. \\ \hline
+\textbf{Preconditions} & An active story session is running in \texttt{Child Mode} (\texttt{S08}–\texttt{S12}, \texttt{S24}). \\ \hline
+\textbf{Postconditions} & The session is safely paused at the current step and the event is recorded in the session log. \\ \hline
+\textbf{Main Flow} & 1. The child taps the persistent \texttt{Pause} or \texttt{Need Help} button. \newline 2. The system immediately halts all audio playback and opens the calm \texttt{Pause and Help} screen (\texttt{S13}). \newline 3. If \texttt{Need Help} was tapped, the screen displays a concise coaching tip for the accompanying adult. \newline 4. When ready, the child taps \texttt{Resume Story} to return to the exact step, or the adult authenticates to exit to \texttt{Caregiver Mode}. \\ \hline
+\textbf{Alternative Flows} & $\bullet$ \textbf{4a. App closed while paused}: The system commits the \texttt{PAUSED} state and \texttt{last\_step\_order} to SQLite so the session can be resumed later (\texttt{S23}). \\ \hline
+\end{xltabular}
+
+
+
+\subsubsection{UC10 — Practice Voice Interaction in Scenario E}
+
+
+\noindent\begin{xltabular}{\textwidth}{|p{4.0cm}|X|}
+\hline
+\textbf{Specification Field} & \textbf{Details} \\ \hline
+\endhead
+\textbf{Use Case ID \& Name} & \textbf{UC10 — Practice Voice Interaction in Scenario E} \\ \hline
+\textbf{Primary Actors} & Child Learner (\texttt{PERS01}), On-Device Speech Recognition Service \\ \hline
+\textbf{Description} & In Scenario E, when voice practice is enabled, the child practices speaking a short functional social phrase or selects a parallel touch card alternative. \\ \hline
+\textbf{Preconditions} & Voice interaction is enabled for the profile and the story reaches Scenario E (\texttt{S24}). \\ \hline
+\textbf{Postconditions} & The child's response (via speech or touch) is confirmed and the story advances to \texttt{Consequence} (\texttt{S11}). \\ \hline
+\textbf{Main Flow} & 1. The system displays \texttt{Voice Interaction Scenario E} (\texttt{S24}) with the model phrase prompt (e.g., \textit{"Can I play too?"}), a \texttt{Listen to Model} button, a central \texttt{Tap to Speak} button, and parallel illustrated touch cards. \newline 2. The child taps \texttt{Tap to Speak} and says the short phrase. \newline 3. The voice controller matches the recognized transcript against target keywords for the scenario. \newline 4. Upon keyword match, the system confirms the choice and transitions to \texttt{Consequence} (\texttt{S11}). \\ \hline
+\textbf{Alternative Flows} & $\bullet$ \textbf{1a. Child prefers touch or Microphone Denied (\texttt{Microphone Denied})}: The child taps the illustrated choice card directly on \texttt{S24} to complete the step without speaking (\texttt{DD36}). \newline $\bullet$ \textbf{3a. Unclear audio (\texttt{Speech Not Recognized})}: The system displays \textit{"Not heard clearly. Choose a picture or try again"} (\texttt{S23}) without grading pronunciation as wrong. \\ \hline
+\end{xltabular}
+
+
+
+\subsubsection{UC11 — View Session History and Versioned Review}
+
+
+\noindent\begin{xltabular}{\textwidth}{|p{4.0cm}|X|}
+\hline
+\textbf{Specification Field} & \textbf{Details} \\ \hline
+\endhead
+\textbf{Use Case ID \& Name} & \textbf{UC11 — View Session History and Versioned Review} \\ \hline
+\textbf{Primary Actors} & Parent (\texttt{PERS02}), Support Teacher (\texttt{PERS03}) \\ \hline
+\textbf{Description} & The caregiver reviews the list of past sessions for the selected child profile and inspects the exact sequence of choices and explanations experienced. \\ \hline
+\textbf{Preconditions} & The caregiver is authenticated and authorized for the selected child profile. \\ \hline
+\textbf{Postconditions} & Version-accurate session review records are displayed descriptively. \\ \hline
+\textbf{Main Flow} & 1. The caregiver opens \texttt{Session History} (\texttt{S15}) to view chronological sessions for the active child profile. \newline 2. The caregiver selects a session to open \texttt{Session Review} (\texttt{S16}). \newline 3. The system queries SQLite joining the exact \texttt{story\_version\_id} and displays the story title, version code, timestamp, choices selected, explanations viewed, and \texttt{Replay}/\texttt{Retry}/\texttt{Pause}/\texttt{Help} counts. \newline 4. The caregiver records optional reflection notes and proceeds to plan the next activity (\texttt{S17}). \\ \hline
+\textbf{Alternative Flows} & $\bullet$ \textbf{1a. No sessions recorded yet}: The system displays the \texttt{Empty History} state (\texttt{S23}) with a direct link to the Story Library. \\ \hline
+\end{xltabular}
+
+
+
+\subsubsection{UC12 — Manage Learning Plan and Activity Reminders}
+
+
+\noindent\begin{xltabular}{\textwidth}{|p{4.0cm}|X|}
+\hline
+\textbf{Specification Field} & \textbf{Details} \\ \hline
+\endhead
+\textbf{Use Case ID \& Name} & \textbf{UC12 — Manage Learning Plan and Activity Reminders} \\ \hline
+\textbf{Primary Actor} & Parent (\texttt{PERS02}) \\ \hline
+\textbf{Description} & The parent selects upcoming stories for the child's learning plan and configures local reminder notifications. \\ \hline
+\textbf{Preconditions} & The parent is in \texttt{Caregiver Mode}. \\ \hline
+\textbf{Postconditions} & Planned stories and local notification schedules are saved. \\ \hline
+\textbf{Main Flow} & 1. The parent opens \texttt{Learning Plan} (\texttt{S17}) from Caregiver Home or after reviewing a session. \newline 2. The parent adds target stories to the child's plan. \newline 3. The parent enables reminders and selects preferred days and time (\texttt{S17}/\texttt{S19}). \newline 4. The system requests OS notification permission (if needed) and schedules local reminders via \texttt{ReminderService}. \\ \hline
+\textbf{Alternative Flows} & $\bullet$ \textbf{4a. OS Notifications Disabled (\texttt{Notification Disabled})}: The system saves the learning plan in SQLite, indicates that reminders are off on \texttt{S19}/\texttt{S23}, and never blocks child story access. \\ \hline
+\end{xltabular}
+
+
+
+\subsubsection{UC13 — Manage Privacy, Microphone, and Data Consent}
+
+
+\noindent\begin{xltabular}{\textwidth}{|p{4.0cm}|X|}
+\hline
+\textbf{Specification Field} & \textbf{Details} \\ \hline
+\endhead
+\textbf{Use Case ID \& Name} & \textbf{UC13 — Manage Privacy, Microphone, and Data Consent} \\ \hline
+\textbf{Primary Actor} & Parent (\texttt{PERS02}) \\ \hline
+\textbf{Description} & The parent manages data collection consents, microphone usage, AI history sharing, teacher links, and data deletion. \\ \hline
+\textbf{Preconditions} & The parent is authenticated in \texttt{Caregiver Mode}. \\ \hline
+\textbf{Postconditions} & Privacy preferences are updated immediately and logged in \texttt{consent\_audit\_logs}. \\ \hline
+\textbf{Main Flow} & 1. The parent opens \texttt{Privacy and Access} (\texttt{S20}). \newline 2. The system displays current states for Microphone permission (Scenario E), AI history usage consent, and active teacher profile links. \newline 3. The parent toggles permissions or triggers session history deletion. \newline 4. The system applies changes immediately and records an audit entry. \\ \hline
+\textbf{Alternative Flows} & $\bullet$ \textbf{3a. Delete entire child profile}: The system requires explicit two-step confirmation before cascading deletion of the profile and its session records in SQLite. \\ \hline
+\end{xltabular}
+
+
+
+\subsubsection{UC14 — Access Help/FAQ and Submit Feedback/Issue Reports}
+
+
+\noindent\begin{xltabular}{\textwidth}{|p{4.0cm}|X|}
+\hline
+\textbf{Specification Field} & \textbf{Details} \\ \hline
+\endhead
+\textbf{Use Case ID \& Name} & \textbf{UC14 — Access Help/FAQ and Submit Feedback/Issue Reports} \\ \hline
+\textbf{Primary Actors} & Parent (\texttt{PERS02}), Support Teacher (\texttt{PERS03}) \\ \hline
+\textbf{Description} & The caregiver consults user guides and FAQs or submits an issue report / content feedback. \\ \hline
+\textbf{Preconditions} & The caregiver is in \texttt{Caregiver Mode}. \\ \hline
+\textbf{Postconditions} & Help content is displayed or the feedback report is queued/submitted. \\ \hline
+\textbf{Main Flow} & 1. The caregiver opens \texttt{Help FAQ and Contact} (\texttt{S21}) to review companion guidance and social story principles. \newline 2. To report an issue, the caregiver opens \texttt{Feedback and Issue Report} (\texttt{S22}). \newline 3. The caregiver enters feedback text, chooses whether to attach anonymized \texttt{story\_version}/diagnostic metadata, and taps Submit. \newline 4. The system confirms submission (\texttt{Feedback Submission} - \texttt{S23}). \\ \hline
+\textbf{Alternative Flows} & $\bullet$ \textbf{4a. Device Offline during submission}: The system stores the report in the local SQLite queue (\texttt{Save or Sync Pending} - \texttt{S23}) for retry when connectivity returns. \\ \hline
+\end{xltabular}
+
+
+
+\section{Context Diagram and Data Flow Diagram}
+
+
+
+\subsection{Context Diagram}
+
+
+The Context Diagram represents \textbf{Bear Buddy} as a single central process (\texttt{0.0 Bear Buddy Application System}) to establish the system boundary and external data exchanges.
+
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.92\textwidth]{figures/context_diagram.png}
+\caption{Context Diagram of the Bear Buddy System}
+\label{fig:context_diagram}
+\end{figure}
+
+
+
+\subsection{Level 0 Data Flow Diagram (DFD Level 0)}
+
+
+The Level 0 Data Flow Diagram decomposes Bear Buddy into \textbf{6 core processes} and \textbf{5 local SQLite data stores}, reflecting the strict boundary between child-facing learning processes and caregiver management processes:
+
+\begin{itemize}
+  \item \textbf{Core Processes}:
+  \item \texttt{1.0 Profile, Role Access \& Accessibility Management}: Handles Caregiver Gate verification, child profiles, teacher access links, accessibility settings, and privacy consents (\texttt{S01}–\texttt{S04}, \texttt{S19}, \texttt{S20}).
+  \item \texttt{2.0 Versioned Story Library, Search \& Preview}: Queries stories by category/keyword, tracks \texttt{story\_version}, and renders caregiver previews (\texttt{S05}–\texttt{S07}).
+  \item \texttt{3.0 Interactive Story Engine \& Multimodal Player (Child Mode)}: Orchestrates the child learning loop, single-stream narration, touch choices, \texttt{Action} $\rightarrow$ \texttt{Reaction} $\rightarrow$ \texttt{Why} presentation, \texttt{Replay}, \texttt{Retry}, \texttt{Pause}, and \texttt{Need Help} (\texttt{S08}–\texttt{S14}).
+  \item \texttt{4.0 Scenario E Voice Processing \& Touch Fallback}: Manages bounded phrase practice on \texttt{S24}, checks microphone consent, matches keywords via STT, and guarantees an immediate touch-card fallback.
+  \item \texttt{5.0 Session Logging, Versioned Review \& Learning Plan}: Records interaction events pinned to \texttt{story\_version}, generates descriptive caregiver reviews, and schedules reminders (\texttt{S15}–\texttt{S17}).
+  \item \texttt{6.0 Explainable AI Suggestions, Help \& Feedback}: Processes grounded AI story recommendations (\texttt{S18}), FAQ lookup, and issue reporting (\texttt{S21}–\texttt{S23}).
+  \item \textbf{Internal SQLite Data Stores}:
+  \item \texttt{D1: Child Profiles \& Access Links}: Stores caregiver accounts, child profiles, and parent–teacher access link permissions.
+  \item \texttt{D2: Accessibility \& Privacy Settings}: Stores font scaling, contrast, audio, motion reduction, and microphone/AI consent states.
+  \item \texttt{D3: Versioned Story Library}: Stores stories, immutable \texttt{story\_version} metadata, scene steps, choices, and explanations.
+  \item \texttt{D4: Session Logs \& Review Records}: Stores session metadata and chronological interaction events linked to \texttt{story\_version}.
+  \item \texttt{D5: Learning Plans, Reminders \& Feedback Queue}: Stores planned stories, reminder schedules, and pending feedback reports.
+\end{itemize}
+
+
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/dfd_level_0.png}
+\caption{Level 0 Data Flow Diagram of the Bear Buddy System}
+\label{fig:dfd_level_0}
+\end{figure}
+
+
+
+\subsection{Architectural Observations on System Data Flows}
+
+
+\begin{enumerate}
+  \item \textbf{Strict Separation of Child and Caregiver Data Flows}: The Child Learner (\texttt{PERS01}) interacts exclusively with Processes \texttt{3.0} and \texttt{4.0}. All configuration (\texttt{1.0}), content selection (\texttt{2.0}), historical review (\texttt{5.0}), and AI consultation (\texttt{6.0}) remain isolated within caregiver-authenticated processes.
+  \item \textbf{Version-Pinned Historical Integrity (\texttt{story\_version}) across \texttt{D3} and \texttt{D4}}: When Process \texttt{5.0} renders a Session Review for a parent or teacher, it joins the interaction log in \texttt{D4} with the immutable \texttt{story\_version} in \texttt{D3}, guaranteeing that adults see the exact wording and explanation the child experienced during that session.
+  \item \textbf{Consent-Gated AI and Voice Execution via \texttt{D2}}: Both Process \texttt{4.0} (Scenario E Voice) and Process \texttt{6.0} (Parent AI Suggestions) must verify explicit permission flags in \texttt{D2: Accessibility \& Privacy} before invoking external or hardware services, while maintaining deterministic local fallbacks from \texttt{D3}.
+\end{enumerate}

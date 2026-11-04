@@ -1,0 +1,399 @@
+\chapter{UI/UX Design}
+
+\section{Design Principles and UX Reasoning Framework}
+
+The user experience architecture of Bear Buddy is governed by a rigorous four-layer UX Reasoning Framework:
+\begin{center}
+\textbf{Layer 1: User Characteristics} $\longrightarrow$ \textbf{Layer 2: UX Concerns} $\longrightarrow$ \textbf{Layer 3: UX Principles} $\longrightarrow$ \textbf{Layer 4: Design Decisions}
+\end{center}
+This traceable derivation guarantees that every visual token, component behavior, and interaction constraint is grounded directly in the cognitive, linguistic, sensory, and motor characteristics of autistic children and their adult caregivers.
+
+\subsection{Layer 1: User Characteristics}
+
+The primary user profile (represented by Persona Minh, \texttt{PERS01}) and supporting caregivers establish eleven core characteristics:
+\begin{itemize}
+    \item \textbf{C1 (Focused Attention)}: Easily overwhelmed by competing stimuli; attention is best preserved through single-focus tasks.
+    \item \textbf{C2 (Emergent Literacy)}: Comprehends concrete spoken language; cannot rely on independent reading of complex text.
+    \item \textbf{C3 (Concrete Cognitive Style)}: Understands literal depictions and concrete examples; abstract metaphors cause confusion.
+    \item \textbf{C4 (Implicit Cue Barriers)}: Requires explicit presentation of facial cues, social intentions, and conversational rules.
+    \item \textbf{C5 (Need for Predictability)}: High sensitivity to sudden environmental or interface changes; requires stable spatial layouts.
+    \item \textbf{C6 (Motor Variability)}: Capable of single-finger tapping on large areas; fine motor precision and gestures are unstable.
+    \item \textbf{C7 (Sensory Sensitivity)}: Vulnerable to sensory overload from loud sounds, bright saturated colors, or rapid screen flashes.
+    \item \textbf{C8 (Emotional Vulnerability)}: Punitive feedback (e.g., loud buzzers, red crosses) elevates anxiety and induces avoidance.
+    \item \textbf{C9 (Desire for Repetition)}: Retrying and replaying familiar content fosters emotional security and schema consolidation.
+    \item \textbf{C10 (Caregiver Co-Regulation)}: Benefits from adult scaffolding during unfamiliar activities and follow-up discussion.
+    \item \textbf{C11 (Varying Digital Fluency)}: Adult caregivers require clear, transparent, and uncluttered management tools.
+\end{itemize}
+
+\subsection{Layer 2: UX Concerns}
+
+Table~\ref{tab:c5_ux_concerns} defines the seventeen UX Concerns (\texttt{UXC1}--\texttt{UXC17}) synthesized from the target characteristics.
+
+\begin{xltabular}{\textwidth}{|p{1.8cm}|p{4.2cm}|X|}
+\hline
+\textbf{Code} & \textbf{UX Concern} & \textbf{Risk Addressed and Design Implication} \\ \hline
+\endhead
+\textbf{UXC1} & Cognitive Overload & Competing UI elements distract the learner from the central narrative. \\ \hline
+\textbf{UXC2} & Reading Burden & Text-heavy interfaces create an insurmountable barrier for non-fluent readers. \\ \hline
+\textbf{UXC3} & Abstraction Barrier & Ambiguous iconography or idioms require unnecessary interpretive effort. \\ \hline
+\textbf{UXC4} & Implicit Social Information & Failure to highlight subtle facial/situational cues leaves social context unclear. \\ \hline
+\textbf{UXC5} & Unpredictable Interaction & Inconsistent button placements disorient the child across screens. \\ \hline
+\textbf{UXC6} & Loss of Orientation & Inability to gauge progress or current location induces anxiety. \\ \hline
+\textbf{UXC7} & Accidental Interaction & Inadvertent taps or multi-touch slips trigger unintended state changes. \\ \hline
+\textbf{UXC8} & Ambiguous Affordance & Inability to distinguish tappable cards from static background graphics. \\ \hline
+\textbf{UXC9} & Lack of Input Feedback & Missing tap confirmations cause repeated pressing or frustration. \\ \hline
+\textbf{UXC10} & Sensory Overload & Jarring audio tracks, high-contrast flashing, or rapid transitions overwhelm the child. \\ \hline
+\textbf{UXC11} & Punitive Feedback & Binary correct/wrong scoring causes task abandonment and failure anxiety. \\ \hline
+\textbf{UXC12} & Memorization vs.\ Understanding & Memorizing correct buttons without comprehending the underlying ``Why'' rationale. \\ \hline
+\textbf{UXC13} & Insufficient Repetition & Inability to replay audio or retry choices limits learning reinforcement. \\ \hline
+\textbf{UXC14} & Context Switching & Unnecessary popups or modal sheets disrupt narrative immersion. \\ \hline
+\textbf{UXC15} & Role Complexity & Mixing complex adult administrative controls into the child's learning space. \\ \hline
+\textbf{UXC16} & Privacy \& Safety Risk & Exposing personal data, microphone streams, or logs without explicit consent. \\ \hline
+\textbf{UXC17} & Premature Complexity & Introducing complex voice interactions before mastering basic touch activities. \\ \hline
+\end{xltabular}
+\label{tab:c5_ux_concerns}
+
+\subsection{Layer 3: UX Principles}
+
+To resolve these concerns, twelve operational UX Principles are established:
+\begin{enumerate}
+    \item \textbf{P1 (Clarity \& Simplicity)}: One screen, one primary focus; eliminate unnecessary visual ornamentation.
+    \item \textbf{P2 (Consistency \& Predictability)}: Standardize navigation layouts, button positions, and transition paradigms.
+    \item \textbf{P3 (Explicit Contextualization)}: Make social cues, intentions, and situational backgrounds visibly explicit.
+    \item \textbf{P4 (Transparent Cause-and-Effect)}: Link every action directly to its natural reaction and concrete rationale.
+    \item \textbf{P5 (Multimodal Redundancy)}: Synchronize visual, textual, and auditory channels for key information.
+    \item \textbf{P6 (Calm Sensory Environment)}: Utilize muted color palettes, gentle auditory chimes, and smooth pacing.
+    \item \textbf{P7 (Ergonomic Touch Targets)}: Provide oversized tap boundaries ($\ge 56\text{dp}$) with ample separation.
+    \item \textbf{P8 (Penalty-Free Exploration)}: Emphasize learning through exploration; eliminate negative scoring or timers.
+    \item \textbf{P9 (Learner Agency \& Support)}: Ensure persistent access to pause, assistance, and audio replay controls.
+    \item \textbf{P10 (Role Separation)}: Strictly segregate Caregiver Mode from Child Mode via an authentication gate.
+    \item \textbf{P11 (Privacy by Design)}: Enforce local-first data persistence and transparent permission prompts.
+    \item \textbf{P12 (Graceful Degradation)}: Provide seamless touch fallbacks for all voice or network-dependent features.
+\end{enumerate}
+
+\subsection{Layer 4: Design Decisions}
+
+The principles are operationalized into forty concrete Design Decisions (\texttt{DD1}--\texttt{DD40}).
+
+\subsubsection{Structure and Navigation (DD1--DD6)}
+
+\begin{xltabular}{\textwidth}{|p{3.5cm}|p{2.5cm}|X|}
+\hline
+\textbf{Decision Code \& Title} & \textbf{Derivation} & \textbf{Interface Behavior and Technical Rationale} \\ \hline
+\endhead
+\textbf{DD1: One Screen, One Task} & C1 $\rightarrow$ UXC1 $\rightarrow$ P1 & Every screen presents exactly one primary activity (e.g., listening, choosing). \\ \hline
+\textbf{DD2: Consistent Structure} & C5 $\rightarrow$ UXC5 $\rightarrow$ P2 & Stories adhere strictly to: \textit{Context $\rightarrow$ Decision $\rightarrow$ Reaction $\rightarrow$ Why $\rightarrow$ Summary}. \\ \hline
+\textbf{DD3: Consistent Controls} & C5 $\rightarrow$ UXC5 $\rightarrow$ P2 & Navigation buttons (Next, Back, Replay, Pause) maintain identical screen coordinates. \\ \hline
+\textbf{DD4: Visual Orientation} & C5 $\rightarrow$ UXC6 $\rightarrow$ P2 & A subtle step indicator displays current progress through the 5-stage story flow. \\ \hline
+\textbf{DD5: Shallow Navigation} & C1, C5 $\rightarrow$ UXC14 $\rightarrow$ P1 & Child Mode avoids deep navigational nesting; forward progression is linear. \\ \hline
+\textbf{DD6: Avoid Modals} & C1 $\rightarrow$ UXC14 $\rightarrow$ P1 & Dialogue popups are prohibited in Child Mode to prevent context disruption. \\ \hline
+\end{xltabular}
+\label{tab:c5_dd_nav}
+
+\subsubsection{Language and Representation (DD7--DD12)}
+
+\begin{xltabular}{\textwidth}{|p{3.5cm}|p{2.5cm}|X|}
+\hline
+\textbf{Decision Code \& Title} & \textbf{Derivation} & \textbf{Interface Behavior and Technical Rationale} \\ \hline
+\endhead
+\textbf{DD7: Concrete Language} & C2, C3 $\rightarrow$ UXC2 $\rightarrow$ P1 & Sentences use simple active voice without metaphors ($<12$ words per phrase). \\ \hline
+\textbf{DD8: Text Minimization} & C1, C2 $\rightarrow$ UXC1 $\rightarrow$ P1 & Text is kept strictly to what is necessary; avoids multi-paragraph clutter. \\ \hline
+\textbf{DD9: Legible Typography} & C2 $\rightarrow$ UXC2 $\rightarrow$ P1 & Clean sans-serif system typeface (SF Pro / Roboto) with generous tracking and line height. \\ \hline
+\textbf{DD10: Stable Text Placement} & C1, C2 $\rightarrow$ UXC2 $\rightarrow$ P1 & Text appears in a dedicated, static bottom text container; never overlays illustrations. \\ \hline
+\textbf{DD11: Literal Iconography} & C3 $\rightarrow$ UXC3 $\rightarrow$ P3 & Icons depict tangible physical objects (e.g., speaker, pause) rather than abstract symbols. \\ \hline
+\textbf{DD12: Labeled Icons} & C2, C3 $\rightarrow$ UXC3 $\rightarrow$ P5 & Interactive icons are accompanied by simple text captions for dual-channel recognition. \\ \hline
+\end{xltabular}
+\label{tab:c5_dd_lang}
+
+\subsubsection{Context, Feedback, and Repetition (DD13--DD19)}
+
+\begin{xltabular}{\textwidth}{|p{3.5cm}|p{2.5cm}|X|}
+\hline
+\textbf{Decision Code \& Title} & \textbf{Derivation} & \textbf{Interface Behavior and Technical Rationale} \\ \hline
+\endhead
+\textbf{DD13: Explicit Context} & C4 $\rightarrow$ UXC4 $\rightarrow$ P3 & Scene Context (\texttt{S09}) explicitly introduces who is present and what is happening. \\ \hline
+\textbf{DD14: Visible Social Cues} & C4 $\rightarrow$ UXC4 $\rightarrow$ P3 & Facial expressions and gestures are visually highlighted with subtle outline callouts. \\ \hline
+\textbf{DD15: Concrete Reaction} & C4 $\rightarrow$ UXC4 $\rightarrow$ P4 & Consequence Screen (\texttt{S11}) illustrates the peer's realistic emotional/verbal response. \\ \hline
+\textbf{DD16: Explicit ``Why''} & C4 $\rightarrow$ UXC12 $\rightarrow$ P4 & Explanation Screen (\texttt{S12}) explains the reason behind the reaction in 1--2 sentences. \\ \hline
+\textbf{DD17: Non-Binary Feedback} & C8 $\rightarrow$ UXC11 $\rightarrow$ P8 & Replaces red crosses/buzzers with descriptive exploration (e.g., ``Let's see what happens''). \\ \hline
+\textbf{DD18: Penalty-Free Retry} & C8, C9 $\rightarrow$ UXC11 $\rightarrow$ P8 & Prominent ``Try Another Choice'' button allows immediate re-attempting without penalty. \\ \hline
+\textbf{DD19: Single-Tap Replay} & C9 $\rightarrow$ UXC13 $\rightarrow$ P9 & Replay button restarts narration and scene animation instantly upon tap. \\ \hline
+\end{xltabular}
+\label{tab:c5_dd_feedback}
+
+\subsubsection{Multimodal Sensory Affordances (DD20--DD25)}
+
+\begin{xltabular}{\textwidth}{|p{3.5cm}|p{2.5cm}|X|}
+\hline
+\textbf{Decision Code \& Title} & \textbf{Derivation} & \textbf{Interface Behavior and Technical Rationale} \\ \hline
+\endhead
+\textbf{DD20: Multimodal Delivery} & C2 $\rightarrow$ UXC2 $\rightarrow$ P5 & Simultaneously provides high-clarity image, highlighted text, and audio narration. \\ \hline
+\textbf{DD21: Controlled Animation} & C7 $\rightarrow$ UXC10 $\rightarrow$ P6 & Smooth, purposeful transitions (300ms ease-out); no flashing, bouncing, or looping motion. \\ \hline
+\textbf{DD22: Controllable Audio} & C7 $\rightarrow$ UXC10 $\rightarrow$ P6 & Persistent mute toggle and volume slider available in settings; no unprompted audio. \\ \hline
+\textbf{DD23: Single-Stream Audio} & C7 $\rightarrow$ UXC10 $\rightarrow$ P6 & Narration, chimes, and prompts play sequentially; background music is strictly disabled. \\ \hline
+\textbf{DD24: Distinct Affordances} & C6 $\rightarrow$ UXC8 $\rightarrow$ P7 & Interactive cards feature card elevation, rounded borders, and contrasting backgrounds. \\ \hline
+\textbf{DD25: Immediate Tap Feedback} & C6 $\rightarrow$ UXC9 $\rightarrow$ P7 & Tapped cards scale subtly (0.97x) with a soft auditory click confirming registration. \\ \hline
+\end{xltabular}
+\label{tab:c5_dd_sensory}
+
+\subsubsection{Physical Touch Ergonomics (DD26--DD30)}
+
+\begin{xltabular}{\textwidth}{|p{3.5cm}|p{2.5cm}|X|}
+\hline
+\textbf{Decision Code \& Title} & \textbf{Derivation} & \textbf{Interface Behavior and Technical Rationale} \\ \hline
+\endhead
+\textbf{DD26: Large Touch Targets} & C6 $\rightarrow$ UXC7 $\rightarrow$ P7 & Interactive cards measure at least $120\times 90\text{dp}$; buttons are $\ge 56\text{dp}$ height. \\ \hline
+\textbf{DD27: Generous Spacing} & C6 $\rightarrow$ UXC7 $\rightarrow$ P7 & Minimum 16dp spacing between adjacent touch targets prevents accidental taps. \\ \hline
+\textbf{DD28: Tap-Based Interaction} & C6 $\rightarrow$ UXC7 $\rightarrow$ P7 & All activities operate via direct single-finger taps; no pinch, drag, or double-tap. \\ \hline
+\textbf{DD29: Limited Choice Count} & C1, C6 $\rightarrow$ UXC1 $\rightarrow$ P1 & Decision screens display exactly 2 (maximum 3) choice cards per decision point. \\ \hline
+\textbf{DD30: Accidental Tap Filter} & C6 $\rightarrow$ UXC7 $\rightarrow$ P7 & 350ms software debounce prevents rapid double-tapping from registering multiple times. \\ \hline
+\end{xltabular}
+\label{tab:c5_dd_motor}
+
+\subsubsection{Data Complexity and Supplementary Flows (DD31--DD40)}
+
+\begin{xltabular}{\textwidth}{|p{3.5cm}|p{2.5cm}|X|}
+\hline
+\textbf{Decision Code \& Title} & \textbf{Derivation} & \textbf{Interface Behavior and Technical Rationale} \\ \hline
+\endhead
+\textbf{DD31: Caregiver Gate} & C10 $\rightarrow$ UXC15 $\rightarrow$ P10 & Adult settings protected by parental PIN or biometric authentication (\texttt{S02}, \texttt{S20}). \\ \hline
+\textbf{DD32: Searchable Library} & C10 $\rightarrow$ UXC15 $\rightarrow$ P10 & Structured category browsing, keyword search, and popularity filters in Caregiver Mode. \\ \hline
+\textbf{DD33: Transparent Details} & C10 $\rightarrow$ UXC15 $\rightarrow$ P10 & Story preview shows objective, sentence breakdown, interaction types, and difficulty. \\ \hline
+\textbf{DD34: Version-Pinned Logs} & C10 $\rightarrow$ UXC16 $\rightarrow$ P11 & Session history binds exact story version, choices, and attempt timestamps (\texttt{S15}, \texttt{S16}). \\ \hline
+\textbf{DD35: Explainable AI Match} & C10 $\rightarrow$ UXC15 $\rightarrow$ P10 & Recommendations provide explicit rationale (e.g., ``Suggested because Minh practiced waiting''). \\ \hline
+\textbf{DD36: Touch Fallback First} & C2 $\rightarrow$ UXC17 $\rightarrow$ P12 & Scenario~E always renders choice cards beneath the microphone; fallback is instant. \\ \hline
+\textbf{DD37: Pause \& Help Buttons} & C1 $\rightarrow$ UXC1 $\rightarrow$ P9 & Persistent ``Take a Break'' and ``Need Help'' controls allow the child to pause anytime. \\ \hline
+\textbf{DD38: Microphone Consent} & C10 $\rightarrow$ UXC16 $\rightarrow$ P11 & Transparent permission dialog with clear explanation; voice mode can be toggled off. \\ \hline
+\textbf{DD39: Non-Blocking Speech} & C2 $\rightarrow$ UXC17 $\rightarrow$ P12 & Speech recognition failure displays comforting message and presents touch cards immediately. \\ \hline
+\textbf{DD40: Local State Preservation} & C5 $\rightarrow$ UXC5 $\rightarrow$ P12 & Interruptions save current step locally; learner resumes at exact frame without data loss. \\ \hline
+\end{xltabular}
+\label{tab:c5_dd_data}
+
+\section{Information Architecture and Navigation}
+
+\subsection{Two-Mode Structural Separation}
+
+Bear Buddy strictly enforces a two-mode architectural paradigm:
+\begin{itemize}
+    \item \textbf{Caregiver Mode}: Dedicated adult management environment encompassing Onboarding, Child Profile Management, Accessibility Configuration, Story Library, Learning Plans, Session Review Analytics, and System Settings.
+    \item \textbf{Child Mode}: Dedicated, distraction-free learning environment presenting the interactive story player, orientation sequence, decision cards, consequence animations, and pause states.
+\end{itemize}
+
+\subsection{Primary Navigation Flows}
+
+Table~\ref{tab:c5_nav_areas} summarizes the primary functional areas and their design roles.
+
+\begin{xltabular}{\textwidth}{|p{3.2cm}|p{4.5cm}|X|}
+\hline
+\textbf{Navigation Area} & \textbf{Primary Content \& Screens} & \textbf{Design Role and Constraints} \\ \hline
+\endhead
+\textbf{Caregiver Home} & Child profile summary, scheduled plans, AI suggestions (\texttt{S05}). & Central adult dashboard; overview of learning status and quick access to library. \\ \hline
+\textbf{Story Library} & Categorized lists, search filters, popular stories (\texttt{S06}, \texttt{S07}). & Discovery space; provides complete transparency into story learning goals before launch. \\ \hline
+\textbf{Story Player} & Context, decision, consequence, explanation, summary (\texttt{S09}--\texttt{S14}). & Full-screen child learning space; zero external links, ads, or administrative clutter. \\ \hline
+\textbf{Review \& History} & Session history list, detailed decision breakdowns (\texttt{S15}, \texttt{S16}). & Evaluative tool; shows exact versioned choices and retry counts to guide adult support. \\ \hline
+\textbf{Settings \& Consent} & Accessibility toggles, teacher links, privacy consent audit (\texttt{S04}, \texttt{S19}, \texttt{S20}). & Governance area; full control over microphone permissions and data storage. \\ \hline
+\end{xltabular}
+\label{tab:c5_nav_areas}
+
+\subsection{Spatial Orientation and Predictability}
+
+To maintain predictability across the application:
+\begin{itemize}
+    \item The navigation bar in Caregiver Mode uses standard tab navigation.
+    \item In Child Mode, the top bar contains only the Pause/Break button (\texttt{left}) and the Step Indicator (\texttt{center}).
+    \item The bottom bar contains the Back button (\texttt{left}), Replay Narration button (\texttt{center}), and Next button (\texttt{right}).
+\end{itemize}
+
+\section{Onboarding and First-Time Experience}
+
+\subsection{Caregiver Introduction (\texttt{S01}, \texttt{S02})}
+
+The first launch introduces caregivers to Bear Buddy's educational philosophy:
+\begin{enumerate}
+    \item \textbf{Mission Overview}: Explains social story methodology, positive scaffolding, and role separation.
+    \item \textbf{Security Setup}: Sets the 4-digit Caregiver Gate PIN or enables Face~ID/Touch~ID.
+    \item \textbf{Profile Creation}: Prompts for the child's nickname and birth year (strictly omitting sensitive identifiers).
+    \item \textbf{Baseline Accessibility}: Recommends initial font scaling and sound volume based on child preferences.
+\end{enumerate}
+
+\subsection{Child Orientation Sequence (\texttt{S08})}
+
+When the child launches their first story session, a gentle 3-step interactive tutorial introduces:
+\begin{enumerate}
+    \item How to tap a card to make a choice.
+    \item How to tap the speaker button to hear the story again.
+    \item How to tap the ``Take a Break'' button whenever feeling tired or overwhelmed.
+\end{enumerate}
+
+\subsection{Completing the First Learning Activity}
+
+Upon finishing the first story, the application transitions to the Session End Screen (\texttt{S14}), validating participation with warm visual affirmation (gentle character clap) and providing caregivers with a summary prompt to discuss the story.
+
+\section{Accessibility Specifications}
+
+\subsection{Design Criteria and Verification Methods}
+
+Table~\ref{tab:c5_accessibility} details the accessibility specifications aligned with WCAG~2.2 Level~AA and pediatric usability standards.
+
+\begin{xltabular}{\textwidth}{|p{3.0cm}|p{4.5cm}|X|}
+\hline
+\textbf{Dimension} & \textbf{Design Specification} & \textbf{Verification Protocol} \\ \hline
+\endhead
+\textbf{Visual Contrast} & Normal text contrast ratio $\ge 4.5:1$; large headings and active cards $\ge 7:1$. & Contrast checker tools verifying against WCAG~2.2 AA standards. \\ \hline
+\textbf{Typography} & Minimum body font size 18sp; Dynamic Type font scaling up to 200\% without truncation. & Tested across system font scaling settings in iOS Accessibility inspector. \\ \hline
+\textbf{Touch Targets} & Minimum dimensions $56\times 56\text{dp}$; interactive cards $\ge 120\times 90\text{dp}$; $\ge 16\text{dp}$ margins. & Automated UI test assertions verifying bounding box coordinates. \\ \hline
+\textbf{Auditory Clarity} & Single-stream voice narration at 110--125 wpm; no background music; clear articulation. & Evaluated by clinical speech-language therapists for prosodic clarity. \\ \hline
+\textbf{Motion Control} & UI transitions bounded to 300ms ease-out; strict compliance with \textit{Reduce Motion}. & UI inspector test ensuring animations disable when system toggle is active. \\ \hline
+\textbf{Screen Readers} & Semantic accessibility labels and hints attached to all interactive SwiftUI elements. & VoiceOver screen reader walkthrough verifying logical traversal sequence. \\ \hline
+\end{xltabular}
+\label{tab:c5_accessibility}
+
+\subsection{Boundaries and Personalization Settings}
+
+The Accessibility Setup screen (\texttt{S04}) enables individualized adjustments:
+\begin{itemize}
+    \item \textbf{Text Display}: Font size slider (Standard, Large, Extra Large); High-Contrast Text toggle.
+    \item \textbf{Audio Controls}: Narration Volume; Speech Pacing (Slow, Standard); Voice Gender selection.
+    \item \textbf{Interaction Modes}: Voice Interaction toggle (enabling or completely bypassing Scenario~E); Tap Debounce duration.
+\end{itemize}
+
+\section{Design System and Mockup Architecture}
+
+\subsection{Visual Language and Core Design Tokens}
+
+Table~\ref{tab:c5_tokens} lists the semantic design tokens established for Bear Buddy.
+
+\begin{xltabular}{\textwidth}{|p{3.2cm}|p{3.0cm}|X|}
+\hline
+\textbf{Token Name} & \textbf{Value / Palette} & \textbf{Semantic Usage in Interface} \\ \hline
+\endhead
+\texttt{Color.BrandPrimary} & Soft Sky Blue (\texttt{\#2B6CB0}) & Primary caregiver controls, active headers, step indicator highlights. \\ \hline
+\texttt{Color.BrandSecondary} & Warm Amber (\texttt{\#DD6B20}) & Child interactive cards, gentle highlights, affirmative callouts. \\ \hline
+\texttt{Color.SurfaceBackground} & Calm Off-White (\texttt{\#F7FAFC}) & Full-screen background reducing eye strain compared to harsh pure white. \\ \hline
+\texttt{Color.CardSurface} & Pure White (\texttt{\#FFFFFF}) & Foreground interactive card surfaces, bordered by 1.5dp outline. \\ \hline
+\texttt{Color.TextPrimary} & Deep Charcoal (\texttt{\#1A202C}) & High-legibility text providing optimal contrast against off-white surfaces. \\ \hline
+\texttt{Color.TextSecondary} & Slate Gray (\texttt{\#4A5568}) & Secondary descriptive labels, metadata, and timestamps. \\ \hline
+\texttt{Color.Affirmative} & Gentle Meadow Green (\texttt{\#2F855A}) & Positive outcome backgrounds, completion indicators, retry confirmation. \\ \hline
+\texttt{Color.CardOutline} & Slate Outline (\texttt{\#CBD5E0}) & Unselected card borders providing clear geometric definition. \\ \hline
+\end{xltabular}
+\label{tab:c5_tokens}
+
+\subsection{Shared Reusable Components}
+
+The UI architecture leverages modular SwiftUI components:
+\begin{itemize}
+    \item \texttt{ChoiceCardView}: Tappable rounded container encapsulating illustration, short label, and selected state.
+    \item \texttt{StoryStepBar}: Visual progress tracker displaying 5 calm dots indicating current stage.
+    \item \texttt{SingleStreamAudioPlayer}: Standardized audio controller managing playback, progress, and replay.
+    \item \texttt{CaregiverGateView}: Secure PIN keypad sheet protecting administrative settings.
+    \item \texttt{WhyExplanationBox}: Highlighted card linking character emotional reaction to the causal reason.
+\end{itemize}
+
+\subsection{Complete Screen Catalog (S01--S24)}
+
+Table~\ref{tab:c5_screens} inventories all twenty-four screens specified in the system design.
+
+\begin{xltabular}{\textwidth}{|p{1.2cm}|p{4.2cm}|X|}
+\hline
+\textbf{ID} & \textbf{Screen Name} & \textbf{Core Educational \& Functional Purpose} \\ \hline
+\endhead
+\textbf{S01} & Introduction & Welcomes adult caregivers, explains Social Story methodology and safety. \\ \hline
+\textbf{S02} & Account Access \& Gate & Authentication gate, PIN verification, and role guard. \\ \hline
+\textbf{S03} & Child Profile \& Linking & Create/switch child profiles; generate or redeem teacher access links. \\ \hline
+\textbf{S04} & Accessibility Setup & Adjust font scaling, high contrast, audio volume, and voice toggles. \\ \hline
+\textbf{S05} & Caregiver Home & Active child profile dashboard, scheduled plans, explainable AI recommendations. \\ \hline
+\textbf{S06} & Story Library & Categorized library, search bar, difficulty filters, and popularity section. \\ \hline
+\textbf{S07} & Story Details \& Preview & Comprehensive story preview showing goals, text script, and interaction types. \\ \hline
+\textbf{S08} & Child Orientation & Interactive tutorial teaching card tapping, replay, and the Break button. \\ \hline
+\textbf{S09} & Story Context & Presents scene illustration, setting, participants, and audio narration. \\ \hline
+\textbf{S10} & Decision Activity & Displays 2--3 large choice cards for child response prediction. \\ \hline
+\textbf{S11} & Consequence View & Shows character's natural social reaction to the chosen response. \\ \hline
+\textbf{S12} & Explanation \& Retry & Delivers concrete ``Why'' explanation and penalty-free retry control. \\ \hline
+\textbf{S13} & Pause \& Break Screen & Low-stimulation resting screen allowing the child to take a break. \\ \hline
+\textbf{S14} & Session End & Warm closure screen celebrating participation and signaling completion. \\ \hline
+\textbf{S15} & Session History & Chronological list of completed sessions bound to specific child profile. \\ \hline
+\textbf{S16} & Session Review Detail & Deep inspection of choices, attempt counts, timestamps, and pinned versions. \\ \hline
+\textbf{S17} & Learning Plan & Weekly schedule planner and notification reminder configuration. \\ \hline
+\textbf{S18} & Parent AI Suggestions & Full-screen view of grounded recommendations with transparent reasoning text. \\ \hline
+\textbf{S19} & Settings \& Notifications & Manages local notification triggers, sound options, and app preferences. \\ \hline
+\textbf{S20} & Privacy \& Consent Logs & Granular microphone consent management, audit trail inspection, local export. \\ \hline
+\textbf{S21} & Help, FAQ \& Guidelines & Guidance documentation on Social Stories, co-viewing tips, and FAQs. \\ \hline
+\textbf{S22} & Feedback \& Issue Report & In-app form to report software defects or suggest new situational stories. \\ \hline
+\textbf{S23} & System States Display & Centralized handler for loading, empty, offline, and error states. \\ \hline
+\textbf{S24} & Voice Scenario~E & Bounded voice interaction interface with prompt and instant touch fallback. \\ \hline
+\end{xltabular}
+\label{tab:c5_screens}
+
+\subsection{Interactive Clickable Prototype Specifications}
+
+The clickable prototype developed in Figma and SwiftUI adheres to these functional requirements:
+\begin{itemize}
+    \item Full navigation walkthrough connecting \texttt{S05} $\rightarrow$ \texttt{S07} $\rightarrow$ \texttt{S09}--\texttt{S14} $\rightarrow$ \texttt{S15}--\texttt{S16}.
+    \item Fully simulated touch debounce and realistic card scaling animations on tap.
+    \item Simulated audio narration playback with synchronized sentence highlighting.
+    \item Simulated fallback triggering in \texttt{S24} demonstrating transition from speech to touch card selection.
+\end{itemize}
+
+\section{Interface States and Edge Handling}
+
+Table~\ref{tab:c5_states} outlines the fourteen core system states and edge-case handling rules.
+
+\begin{xltabular}{\textwidth}{|p{3.2cm}|p{4.5cm}|X|}
+\hline
+\textbf{State} & \textbf{Interface Manifestation} & \textbf{Recovery Action \& State Preservation} \\ \hline
+\endhead
+\textbf{Loading State} & Calm circular progress indicator with gentle textual status (e.g., ``Preparing story...''). & Non-blocking; background prefetching; avoids rapid blinking. \\ \hline
+\textbf{Empty Library} & Friendly illustration indicating no stories match current search query. & Displays ``Clear Filters'' button to restore full library view. \\ \hline
+\textbf{Empty History} & Reassuring message in \texttt{S15} indicating no sessions completed yet. & Provides a direct shortcut button to ``Explore Story Library''. \\ \hline
+\textbf{Offline State} & Subtle banner indicating offline operation; core stories remain accessible. & Disables cloud-dependent AI features while keeping all local stories active. \\ \hline
+\textbf{Content Error} & Simple notification stating story could not be loaded. & Offers ``Retry Loading'' and maintains current user position. \\ \hline
+\textbf{Save Pending} & Subtle checkmark indicating local database write is pending or committed. & Confirms local SQLite commit immediately without network wait. \\ \hline
+\textbf{Microphone Denied} & Friendly banner in \texttt{S24} indicating microphone is disabled. & Automatically presents touch choice cards; offers link to iOS Settings. \\ \hline
+\textbf{Speech Unrecognized} & Reassuring prompt: ``We didn't catch that. Tap a card below or try again.'' & No penalty; highlights touch cards immediately for zero-friction progress. \\ \hline
+\textbf{AI Timeout} & Banner in \texttt{S18} stating recommendations are momentarily delayed. & Defaults immediately to standardized situational library categories. \\ \hline
+\textbf{Invalid Form Input} & Inline red outline on erroneous field in Caregiver Mode. & Preserves existing valid inputs; displays clear instruction on correction. \\ \hline
+\textbf{Access Link Error} & Clean notification in \texttt{S03} indicating teacher token is expired or invalid. & Prompts caregiver to request a refreshed access link from parent. \\ \hline
+\textbf{Notification Disabled} & Informational card in \texttt{S19} showing reminder status is off. & Provides one-tap toggle navigating to system notification preferences. \\ \hline
+\textbf{Paused State} & Low-stimulation overlay in \texttt{S13} displaying ``Taking a break''. & Freezes audio and timers; offers large ``Resume Story'' button. \\ \hline
+\textbf{Feedback Submitted} & Confirmation checkmark affirming feedback was recorded locally. & Confirms receipt and returns user to Caregiver Home dashboard. \\ \hline
+\end{xltabular}
+\label{tab:c5_states}
+
+\section{Usability Evaluation and Design Iteration}
+
+\subsection{Evaluation Goals and User Tasks}
+
+Usability evaluations are conducted with parent-child dyads and educators to validate:
+\begin{enumerate}
+    \item \textbf{Task 1 (Child Ergonomics)}: Can the child navigate through the 5-stage story and select choices without adult physical intervention?
+    \item \textbf{Task 2 (Cause-and-Effect Comprehension)}: Does the child understand why character reactions change when trying an alternative response?
+    \item \textbf{Task 3 (Caregiver Utility)}: Can parents easily interpret session logs in \texttt{S16} to identify concepts requiring reinforcement?
+\end{enumerate}
+
+\subsection{Feedback Protocol and Iteration Strategy}
+
+Testing sessions employ direct observation and semi-structured post-test interviews:
+\begin{itemize}
+    \item Observational metrics include tap target miss rate, hesitation duration before choosing, and signs of sensory fatigue.
+    \item Interview protocols query caregiver confidence in data privacy and perceived clarity of explainable AI suggestions.
+    \item Design iterations are prioritized based on observed barrier severity: critical touch barriers are resolved immediately, followed by linguistic fine-tuning.
+\end{itemize}
+
+\subsection{Traceability Linking UX Decisions to Requirements and Architecture}
+
+Table~\ref{tab:c5_traceability} maps the user needs and design decisions to architectural subsystems.
+
+\begin{xltabular}{\textwidth}{|p{2.2cm}|p{2.5cm}|p{2.5cm}|X|}
+\hline
+\textbf{User Need} & \textbf{Design Decisions} & \textbf{Screen Mapping} & \textbf{Architectural Module Cross-Reference} \\ \hline
+\endhead
+\textbf{UN01, UN05} & \texttt{DD13}--\texttt{DD19} & \texttt{S09}--\texttt{S12} & \texttt{MOD02} (StoryPlayer), \texttt{MOD03} (StoryEngine). \\ \hline
+\textbf{UN02, UN04} & \texttt{DD7}--\texttt{DD12}, \texttt{DD26}--\texttt{DD30} & \texttt{S04}, \texttt{S08}--\texttt{S12} & SwiftUI Components, \texttt{MOD04} (SpeechController). \\ \hline
+\textbf{UN03, UN06, UN10} & \texttt{DD2}--\texttt{DD6}, \texttt{DD21}--\texttt{DD23}, \texttt{DD37} & \texttt{S09}--\texttt{S14} & State coordinator, persistent audio session, local store. \\ \hline
+\textbf{UN07} & \texttt{DD31}, \texttt{DD32} & \texttt{S05}--\texttt{S07} & \texttt{MOD01} (AuthGuard), Story Library repository. \\ \hline
+\textbf{UN08} & \texttt{DD31}--\texttt{DD34}, \texttt{DD38} & \texttt{S03}, \texttt{S15}--\texttt{S16}, \texttt{S20} & \texttt{MOD06} (SessionReview), \texttt{MOD08} (SQLite Database). \\ \hline
+\textbf{UN09} & \texttt{DD35}, \texttt{DD39} & \texttt{S18}, \texttt{S24} & \texttt{MOD07} (ParentCoach AI), \texttt{MOD05} (VoiceController). \\ \hline
+\textbf{UN11} & \texttt{DD33}, \texttt{DD34}, \texttt{P11} & \texttt{S03}, \texttt{S04}, \texttt{S20} & \texttt{MOD08} (SQLite Database), Privacy audit coordinator. \\ \hline
+\textbf{UN12} & \texttt{DD24}, \texttt{DD40} & \texttt{S23}, Global states & System state machine, offline cache manager. \\ \hline
+\end{xltabular}
+\label{tab:c5_traceability}

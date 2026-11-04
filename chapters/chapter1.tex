@@ -1,0 +1,110 @@
+\chapter{Introduction}
+
+\section{Application Description}
+
+Bear Buddy is a mobile application designed to support autistic children in becoming familiar with and navigating everyday social situations through short stories, illustrations, spoken narration, and interactive learning activities. The application is conceptualized as a situational learning tool in which children can explore contexts, predict narrative developments, choose responses, and receive clear explanations before encountering similar real-world scenarios.
+
+The content of Bear Buddy is structured following the principles of the Social Story methodology and enriched with interactive engagement. Initial situational scenarios cover waiting for one's turn, greeting new peers, asking to join group play, and requesting assistance. The topic library can be expanded to encompass specific everyday contexts such as visiting a physician, getting a haircut, changing classrooms, or coping when a request is declined.
+
+During a typical learning session, a parent or support teacher selects an appropriate social story, introduces the activity, and provides scaffolding as needed. The child directly views, listens to, and interacts with the story frames. Each critical decision point is connected to character reactions and pre-authored explanations, clarifying the explicit relationship between an action, its social reaction, and the underlying rationale. The interaction history is recorded to enable caregivers to review learning engagement, discuss experiences with the child, and plan subsequent developmental activities.
+
+Bear Buddy defines two primary user groups. The primary user is the child who directly experiences the interactive story. The secondary user is the parent or support teacher who configures assistive settings, selects content, and reviews session outcomes. Throughout this report, the term \textit{caregiver} refers collectively to adult companions; specific role permissions for parents and teachers are formally specified in Chapter~3.
+
+Artificial Intelligence (AI) is utilized in two bounded scopes: assisting caregivers in discovering stories matched to developmental goals or past interaction patterns, and supporting bounded voice interaction in Scenario~E. Because Scenario~E represents an experimental speech interaction paradigm, this report establishes a strict touch fallback so that the core learning loop remains fully accessible through touch manipulation and pre-authored story assets whenever speech recognition is disabled.
+
+\section{Problem Statement}
+
+Many autistic children experience difficulties in interpreting implicit social cues that are not communicated directly, such as facial expressions, vocal prosody, conversational turn-taking, or the underlying reasons why others react to specific behaviors. In common social scenarios such as waiting for a turn, greeting a peer, asking to join a game, or asking for help, recognizing individual vocabulary words is often insufficient to comprehend the complete social context. Documentation from the National Institutes of Health (NIH) emphasizes the wide diversity in communication profiles and the cognitive barriers autistic individuals may face when deciphering subtle communicative signals.
+
+The research hypothesis of this project posits that in many home and classroom environments, behavioral guidance currently relies on reactive explanations delivered at the moment a social difficulty arises. Such ad-hoc explanations tend to be fragmented, vary significantly between different adult caregivers, and lack structured permanence for repeated review. Furthermore, adults cannot consistently anticipate and explain every subtle cue in real time. This hypothesis motivates our formal requirements elicitation and system design.
+
+From this problem hypothesis, three primary gaps have been identified:
+\begin{enumerate}
+    \item Children require a structured, predictable, and repeatable mechanism to explore social situations in a low-anxiety environment.
+    \item Adult caregivers require pre-authored, standardized content to provide consistent scaffolding across home and school settings.
+    \item Caregivers need clear visibility into how children make choices and understand rationales, rather than merely tracking completion counts.
+\end{enumerate}
+
+The proposed solution transforms prevalent social scenarios into interactive, pre-structured digital social stories. Children encounter each component of a situational context step-by-step, observe potential behavioral responses and their social consequences, and engage in penalty-free retries with appropriate scaffolding. Character reactions represent natural conversational dynamics rather than punitive scoring, helping children construct cause-and-effect mental models without fear of failure.
+
+\section{Project Goals and Objectives}
+
+The primary goal of the Bear Buddy project is to design, specify, and architect an accessible mobile application that assists autistic children in exploring everyday social scenarios through interactive social stories, accompanied by adult configuration and review tools.
+
+To achieve this goal, the project establishes four concrete objectives:
+\begin{enumerate}
+    \item \textbf{Develop a Structured Social Story Engine}: Deliver an interactive story player based on Carol Gray's Social Story criteria, incorporating clear visual representations, single-stream narration, and predictable scene transitions.
+    \item \textbf{Implement a Predictable, Non-Punitive Learning Loop}: Formulate an interaction loop (\textit{Understand $\rightarrow$ Predict $\rightarrow$ Choose $\rightarrow$ Observe $\rightarrow$ Understand Why $\rightarrow$ Repeat}) that reinforces cause-and-effect understanding without penalizing incorrect choices.
+    \item \textbf{Provide Role-Separated Caregiver Scaffolding}: Establish a dedicated Caregiver Mode protected by authentication (\texttt{Caregiver Gate}) to manage child profiles, configure accessibility settings, generate teacher access links, and review version-pinned session logs.
+    \item \textbf{Design for Offline-First Accessibility and Privacy}: Architect an offline-first mobile system utilizing local SQLite storage, strict on-device data minimization, transparent microphone consent, and comprehensive accessibility adaptations (WCAG~2.2 AA touch targets, high contrast, and font scaling).
+\end{enumerate}
+
+\section{Target Audience and Scope}
+
+\subsection{Target Audience and Developmental Profiles}
+
+Bear Buddy primarily targets children aged 4 to 10 with developmental differences on the autism spectrum, characterized by:
+\begin{itemize}
+    \item Verbal or minimally verbal communication capabilities, capable of comprehending short sentences and concrete visual icons.
+    \item Emerging ability to perform direct single-touch selection on a touchscreen interface.
+    \item A need for high predictability, explicit cause-and-effect demonstration, and minimal sensory distraction.
+\end{itemize}
+
+Secondary target users comprise parents, primary family caregivers, and special education teachers who accompany and support the child's learning process.
+
+\subsection{Planned Functional Scope}
+
+The planned functional scope of the Bear Buddy application is organized into core functional modules as summarized in Table~\ref{tab:c1_functional_scope}.
+
+\begin{xltabular}{\textwidth}{|p{4.2cm}|X|}
+\hline
+\textbf{Functional Group} & \textbf{Scope and Technical Deliverables} \\ \hline
+\endhead
+\textbf{Story Library \& Categorization} & Standardized situational categories (Peer Interaction, Routine Changes, Emotional Regulation, Classroom Tasks) with versioned metadata. \\ \hline
+\textbf{Interactive Story Player} & Single-stream audio narration, synchronized visual frames, explicit social cue callouts, and tap-based decision activities. \\ \hline
+\textbf{Feedback \& Rationale} & Character reaction displays and explicit ``Why'' explanations (\texttt{S11}, \texttt{S12}); non-punitive retry loops. \\ \hline
+\textbf{Voice Interaction (Scenario~E)} & Bounded on-device speech recognition for simple affirmative utterances with mandatory touch fallback. \\ \hline
+\textbf{Session History \& Review} & Version-pinned logging of choices, attempts, and durations for caregiver inspection (\texttt{S15}, \texttt{S16}). \\ \hline
+\textbf{AI Recommendation Engine} & Explainable hybrid grounded story recommendations for caregivers based on child profile and learning history. \\ \hline
+\textbf{Profiles \& Role Access} & Caregiver authentication gate, multi-child profile management, and teacher access link delegation. \\ \hline
+\textbf{Local Storage \& Persistence} & Offline-first SQLite database architecture ensuring core learning continuity without cloud dependency. \\ \hline
+\textbf{Onboarding \& Orientation} & Product introduction, caregiver verification setup, and child orientation sequence (\texttt{S08}). \\ \hline
+\textbf{Accessibility Adaptations} & Dynamic Type font scaling, minimum 48dp touch targets, high-contrast palette, and sound toggles. \\ \hline
+\textbf{Privacy \& Data Security} & Granular consent audit logging, local data encryption, and transparent microphone permissions. \\ \hline
+\textbf{Help, Support \& Feedback} & In-app FAQ, caregiver guidance documentation, and structured issue reporting. \\ \hline
+\end{xltabular}
+\label{tab:c1_functional_scope}
+
+\subsection{Operational Scope and Constraints}
+
+Bear Buddy is designed for use in quiet home or structured educational settings under adult guidance. The digital companion serves as a preparatory and consolidation aid; it does not replace direct adult supervision or clinical therapy.
+
+The initial release targets the iOS platform (iOS 17+) using native SwiftUI, with an architecture extensible to cross-platform deployments. Initial content is provided in Vietnamese and English, with localization infrastructure established in the database schema to accommodate future languages.
+
+\section{User Flow Overview}
+
+The primary user flow follows an adult-guided companion model:
+\begin{center}
+\textbf{Caregiver Selects Story} $\longrightarrow$ \textbf{Child Explores Context} $\longrightarrow$ \textbf{Decision Activity} $\longrightarrow$ \textbf{Observe Reaction \& Why} $\longrightarrow$ \textbf{Consolidation / Retry} $\longrightarrow$ \textbf{Caregiver Review}
+\end{center}
+
+This macro-flow operationalizes into six discrete interaction steps:
+\begin{enumerate}
+    \item \textbf{Setup and Verification}: The adult caregiver completes onboarding, verifies access via the Caregiver Gate, selects the active child profile, and adjusts accessibility preferences.
+    \item \textbf{Story Selection}: The caregiver browses categorized stories or consults explainable AI suggestions, previews learning objectives, and initiates the session.
+    \item \textbf{Context Presentation}: The child views the scene illustration and listens to clear, single-stream narration describing the setting, participants, and explicit social cues.
+    \item \textbf{Decision Activity}: The child predicts an appropriate behavioral response by tapping a choice card or, in Scenario~E, speaking a short phrase.
+    \item \textbf{Outcome Observation and Explanation}: The application displays the character's natural reaction and provides a concrete explanation of why that outcome occurred, offering penalty-free replaying or retrying.
+    \item \textbf{Review and Planning}: The caregiver inspects the version-pinned session record, discusses takeaways with the child, and schedules subsequent learning reminders.
+\end{enumerate}
+
+The core learning loop is defined as \textbf{Understand $\rightarrow$ Predict $\rightarrow$ Choose $\rightarrow$ Observe $\rightarrow$ Understand Why $\rightarrow$ Repeat}. Retrying is entirely optional and free from negative scores or interaction penalties.
+
+\section{User-Centered Design Orientation}
+
+All interaction and visual decisions in Bear Buddy are governed by a four-layer UX Reasoning Framework:
+\begin{center}
+\textbf{User Characteristics} $\longrightarrow$ \textbf{UX Concerns} $\longrightarrow$ \textbf{UX Principles} $\longrightarrow$ \textbf{Design Decisions}
+\end{center}
+
+The developmental profiles and personas detailed in Chapter~2 provide the fundamental inputs. Chapter~5 translates these requirements into interface tokens, component behaviors, and screen layouts. In accordance with W3C Web Accessibility Initiative (WAI) guidelines on user-centered accessibility, prototype evaluations and user feedback directly inform iterative refinements to both specifications and software architecture.

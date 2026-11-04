@@ -1,0 +1,223 @@
+\chapter{Story Content and Interaction Design}
+
+
+This chapter translates the theoretical foundation of Social Stories from Section 2.2, the multimodal learning principles from Section 2.3, and the UX reasoning framework (\texttt{P1}–\texttt{P11}, \texttt{DD1}–\texttt{DD40}) from Section 5.1 into the concrete story content architecture, interaction modality selection, formal specification of \textbf{Scenario E}, and non-punitive feedback rules for \textbf{Bear Buddy}.
+
+
+\section{Situation Library Categorization}
+
+
+The Bear Buddy story library is organized around everyday social situations that children encounter at home, at school, or in community settings. Structuring the library into clear situational themes enables parents (\texttt{PERS02}) and teachers (\texttt{PERS03}) to quickly locate preparatory content before an upcoming real-world event (\texttt{UN07}).
+
+
+\subsection{Four Core Situational Categories}
+
+
+\noindent\begin{xltabular}{\textwidth}{|p{2.0cm}|p{3.2cm}|X|p{2.8cm}|}
+\hline
+\textbf{Category Code} & \textbf{Category Name} & \textbf{Social Preparation Goal} & \textbf{Representative Stories in Scope} \\ \hline
+\endhead
+\textbf{CAT01} & \textbf{Waiting and Shared Routines} & Helps the child recognize cues that an activity requires taking turns or sharing space, understand what to do while waiting, and know when their turn arrives. & $\bullet$ \textit{Waiting for a Turn on the Slide} \newline $\bullet$ \textit{Quiet Reading Time in the Classroom} \newline $\bullet$ \textit{Lining Up to Wash Hands} \\ \hline
+\textbf{CAT02} & \textbf{Peer Entry and Social Play} & Helps the child observe what peers are doing, identify an appropriate moment to approach, ask or signal to join play, and respond when peers agree or are busy. & $\bullet$ \textit{Saying Hello to a New Classmate} \newline $\bullet$ \textit{Asking to Join a Ball Game} \newline $\bullet$ \textit{When a Request to Play Is Not Accepted Yet} \\ \hline
+\textbf{CAT03} & \textbf{Needs Expression and Help-Seeking} & Helps the child recognize when a task is difficult or sensory input is overwhelming, locate a trusted adult/peer, and express a need for help or a break via touch, picture card, or short phrase. & $\bullet$ \textit{Asking a Teacher or Parent to Open a Box} \newline $\bullet$ \textit{Telling an Adult When It Is Too Loud} \newline $\bullet$ \textit{Practicing Short Help-Seeking Phrases (Scenario E)} \\ \hline
+\textbf{CAT04} & \textbf{Preparing for Novel Events and Transitions} & Helps the child anticipate step-by-step sequences, sensory sensations (sounds, touch), and adult support before visiting a new place or experiencing a schedule change. & $\bullet$ \textit{Visiting the Doctor with Mom} \newline $\bullet$ \textit{Getting a Haircut} \newline $\bullet$ \textit{Moving to a New Classroom Activity} \\ \hline
+\end{xltabular}
+
+
+
+\subsection{Standardized Metadata, Versioning, and Transparent Popularity Rules}
+
+
+To satisfy the content versioning requirements in Section 2.2.3 and clarify the \textit{"Most popular social stories"} criteria from Section 1.4.2, every story in the library is governed by standardized metadata:
+
+\begin{itemize}
+  \item \textbf{Identifier and Immutable Version (\texttt{story\_id}, \texttt{story\_version})}: Each published release carries an explicit version code (e.g., \texttt{ST\_JOIN\_PLAY\_v1.2}), recording the content author, special education reviewer, media asset sources, and publication timestamp. Whenever an explanation or decision branch is modified, the system creates a new \texttt{story\_version} rather than overwriting historical records.
+  \item \textbf{Target Support Metadata}: Specifies the primary interaction modalities used, total scene count, whether an optional Scenario E voice step is included, and preparatory guidance for the caregiver on the \texttt{Story Details} screen (\texttt{S07}).
+  \item \textbf{Transparent Rules for "Most Popular Social Stories"}:
+  \item \textit{With Real Operational Data}: Popularity is defined transparently as the \textit{total number of completed sessions over the trailing 30-day window}.
+  \item \textit{During Initial Deployment / Demo Seed}: Featured items are explicitly badged as \textbf{\texttt{[Sample Featured Story]}} (\texttt{[Demo Seed]}) rather than displaying fabricated usage numbers, accompanied by a reminder that caregivers should choose stories based on the child's current situational need rather than general popularity (\texttt{S06}).
+\end{itemize}
+
+
+
+\section{Standard Structure of a Bear Buddy Story}
+
+
+A Bear Buddy story combines the informational structure of Carol Gray's Social Stories (10.4 Criteria) with a predictable interactive sequence (\texttt{DD2}: \texttt{Scene} $\rightarrow$ \texttt{Decision} $\rightarrow$ \texttt{Consequence} $\rightarrow$ \texttt{Explanation} $\rightarrow$ \texttt{Next}). This structure ensures the child always receives sufficient social context before making a decision (\texttt{UN01}, \texttt{DD13}).
+
+
+\subsection{Five Structural Stages of a Standard Story}
+
+
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/story_five_stages.png}
+\caption{The Five Structural Stages of a Standard Bear Buddy Story}
+\label{fig:story_five_stages}
+\end{figure}
+
+
+\begin{enumerate}
+  \item \textbf{Stage 1 — Context Setup (Screen \texttt{S09})}:
+\end{enumerate}
+\begin{itemize}
+  \item \textbf{Purpose}: Introduces the characters (e.g., the child character and Bear Buddy), the physical setting (classroom, playground, clinic), and the ongoing activity.
+  \item \textbf{Sentence Functions}: Uses concrete \textit{Descriptive} sentences paired with observable, evidence-based \textit{Perspective} sentences.
+\end{itemize}
+\begin{enumerate}
+  \item \textbf{Stage 2 — Explicit Social Cue Presentation (Screens \texttt{S09} / \texttt{S10})}:
+\end{enumerate}
+\begin{itemize}
+  \item \textbf{Purpose}: Implements the core principle \textit{Make the implicit explicit} (\texttt{P3}, \texttt{DD14}). Instead of assuming the child will infer meaning from a small facial expression, the visual highlight and narration explicitly point out the relevant cue (e.g., \textit{"Two friends are rolling a red ball and smiling. They are looking at the ball, so they might not know I want to play yet"}).
+\end{itemize}
+\begin{enumerate}
+  \item \textbf{Stage 3 — Decision Activity (Screen \texttt{S10} or \texttt{S24})}:
+\end{enumerate}
+\begin{itemize}
+  \item \textbf{Purpose}: Presents a single focused situational question (e.g., \textit{"What can I do so my friends know I want to play with them?"}) accompanied by concrete illustrated action choices.
+\end{itemize}
+\begin{enumerate}
+  \item \textbf{Stage 4 — Consequence and Why Explanation (Screens \texttt{S11} \& \texttt{S12})}:
+\end{enumerate}
+\begin{itemize}
+  \item \textbf{Purpose}: Explicitly models the causal chain \textbf{\texttt{Action} $\rightarrow$ \texttt{Reaction} $\rightarrow$ \texttt{Why}} (\texttt{DD15}, \texttt{DD16}):
+  \item \textbf{Action (Selected Choice)}: Briefly restates the action the child selected.
+  \item \textbf{Reaction (Scenario Outcome)}: Illustrates and describes how the other characters in this specific scenario respond.
+  \item \textbf{Why (Contextual Social Reason)}: Explains why that action helped the peers understand or why it surprised/confused them in that setting, without claiming absolute laws about how all people think.
+\end{itemize}
+\begin{enumerate}
+  \item \textbf{Stage 5 — Consolidation and Session Closure (Screen \texttt{S14})}:
+\end{enumerate}
+\begin{itemize}
+  \item \textbf{Purpose}: Summarizes the core takeaway using an \textit{Affirmative} or gentle \textit{Coaching} sentence, acknowledges the child's participation, and provides a calm transition to rest, replay, or return to the caregiver.
+\end{itemize}
+
+
+
+\subsection{Language Rules and Sentence Ratio Control}
+
+
+Following the four expressive sentence functions defined in Section 2.2.2 and Carol Gray's Social Stories 10.4 Criteria, all Bear Buddy scripts adhere to strict linguistic constraints:
+
+\begin{itemize}
+  \item \textbf{Sentence Ratio Rule ($\ge 4:1$)}: Across the narrative body of a story, the combined count of \textit{Descriptive}, \textit{Perspective}, and \textit{Affirmative} sentences must be at least \textbf{four times greater} ($\ge 4:1$) than \textit{Directive / Coaching} sentences.
+  \item \textbf{Per-Screen Text Density Limits (\texttt{DD7}, \texttt{DD8})}:
+  \item Each story scene (\texttt{S09}, \texttt{S11}, \texttt{S12}) displays only \textbf{1 to 2 short sentences} (maximum $25\text{ words}$ per screen).
+  \item Each \texttt{Choice Card} label on \texttt{S10} contains at most \textbf{$8\text{ to }10\text{ words}$}, beginning with a concrete action verb.
+  \item \textbf{Avoidance of Absolute Guarantees}: Scripts use realistic qualifiers such as \textit{"sometimes"}, \textit{"may"}, or \textit{"usually"} rather than absolute promises like \textit{"everyone will always say yes"} or \textit{"everything will be completely fine"}.
+\end{itemize}
+
+
+
+\subsection{Complete Walkthrough Script: "Asking to Join a Game" (\texttt{ST\_JOIN\_PLAY\_v1.0})}
+
+
+The table below illustrates a complete screen-by-screen script for a standard interactive story in Bear Buddy:
+
+\begin{footnotesize}
+\noindent\begin{xltabular}{\textwidth}{|c|p{2.2cm}|X|p{2.0cm}|p{2.4cm}|}
+\hline
+\textbf{Scene / Screen} & \textbf{Sentence Function} & \textbf{On-Screen Text \& Narration} & \textbf{Visual Illustration \& Explicit Social Cues (\texttt{DD13}, \texttt{DD14})} & \textbf{Interaction \& Navigation Controls} \\ \hline
+\endhead
+\textbf{Scene 1 (\texttt{S09})} & Descriptive & \textit{"At recess, two friends are rolling a red ball on the grass."} & Two children sitting opposite each other rolling a red ball, smiling calmly. & \texttt{Replay} Narration / Tap \texttt{Next} \\ \hline
+\textbf{Scene 2 (\texttt{S09})} & Perspective + Descriptive & \textit{"I like the red ball and want to play too. My friends are watching the ball, so they may not know I want to join."} & The child character stands nearby looking at the ball; a soft visual highlight indicates the peers' gaze on the ball. & \texttt{Replay} / Tap \texttt{Next} \\ \hline
+\textbf{Scene 3 (\texttt{S10})} & Coaching Prompt & \textit{"What can I do so my friends know I want to play?"} & Displays 3 large illustrated \texttt{Choice Cards}: & $\bullet$ \textbf{Option A}: Walk closer and say or show card \textit{"Can I play too?"} \newline $\bullet$ \textbf{Option B}: Run in and grab the ball away \newline $\bullet$ \textbf{Option C}: Stand far away in silence \\ \hline
+\textbf{Branch A (\texttt{S11} $\rightarrow$ \texttt{S12})} & Consequence + Why + Affirmative & $\bullet$ \textbf{Action}: \textit{"I walked closer and asked to play."} \newline $\bullet$ \textbf{Reaction}: \textit{"My friends stopped the ball, looked at me, and made room in the circle."} \newline $\bullet$ \textbf{Why}: \textit{"When I ask clearly or show my card, my friends know I want to join the game."} & The two peers smile and scoot over to create an open spot on the grass. & \texttt{Replay} / \texttt{Try Another Way} (to Scene 3) / \texttt{Next} (to Closure) \\ \hline
+\textbf{Branch B (\texttt{S11} $\rightarrow$ \texttt{S12})} & Consequence + Why + Coaching & $\bullet$ \textbf{Action}: \textit{"I ran in and grabbed the ball."} \newline $\bullet$ \textbf{Reaction}: \textit{"My friends stopped playing, looked surprised, and held onto the ball."} \newline $\bullet$ \textbf{Why}: \textit{"Taking the ball suddenly without asking can surprise my friends because they do not know I want to play together. I can try asking first."} & The peers look surprised with wide eyes, holding the ball. (No red 'X' or error buzzer is used). & \texttt{Replay} / \texttt{Try Another Way} (returns to Scene 3 without penalty) / \texttt{Next} \\ \hline
+\textbf{Branch C (\texttt{S11} $\rightarrow$ \texttt{S12})} & Consequence + Why + Coaching & $\bullet$ \textbf{Action}: \textit{"I stood far away and watched quietly."} \newline $\bullet$ \textbf{Reaction}: \textit{"My friends kept rolling the ball to each other."} \newline $\bullet$ \textbf{Why}: \textit{"Because I stood far away and did not signal, my friends were busy looking at the ball and did not notice me. I can walk closer or wave."} & The child remains in the background while the two peers continue looking at the ball. & \texttt{Replay} / \texttt{Try Another Way} / \texttt{Next} \\ \hline
+\textbf{Closure (\texttt{S14})} & Affirmative + Coaching & \textit{"When I want to join a game, walking closer and asking or waving helps my friends understand. If I feel shy, I can also ask an adult to help me."} & The child character, Bear Buddy, and the friends rolling the ball together; session end controls displayed. & \texttt{Replay Story} / \texttt{Take a Break} / \texttt{Return with Caregiver} \\ \hline
+\end{xltabular}
+\end{footnotesize}
+
+
+
+\section{Selection of Interaction Modalities and Scenario E Specification}
+
+
+In Sections 1.4.2 and 2.3.3, six candidate interaction modalities were identified for evaluation. This section analyzes the trade-offs between social learning value and motor/cognitive burden for the reference persona Minh (\texttt{PERS01}) to finalize the interaction design for Bear Buddy.
+
+
+\subsection{Trade-off Analysis and Selection of Interaction Modalities}
+
+
+\noindent\begin{xltabular}{\textwidth}{|p{2.0cm}|p{3.2cm}|X|p{2.8cm}|}
+\hline
+\textbf{Interaction Modality} & \textbf{Pedagogical Purpose} & \textbf{Potential Barrier for Persona Minh (\texttt{PERS01})} & \textbf{Final Design Decision in Bear Buddy (\texttt{DD26}–\texttt{DD30}, \texttt{DD35})} \\ \hline
+\endhead
+\textbf{1. Illustrated Multiple Choice (\texttt{Choice Cards})} & Selecting a social response and exploring \texttt{Action} $\rightarrow$ \texttt{Reaction} $\rightarrow$ \texttt{Why}. & Too many options or dense text causes cognitive/reading overload (\texttt{UXC1}, \texttt{UXC2}). & \textbf{Selected as Primary Core Modality (\texttt{Must})}: Capped at 2–3 large cards per decision, pairing clear illustration, short label, and per-card audio readout. \\ \hline
+\textbf{2. Scene Element / Character Tap (\texttt{Scene Hotspot Tap})} & Directing attention to who to approach or which cue to notice in a scene. & Ambiguous affordance between background art and tappable areas (\texttt{UXC8}). & \textbf{Retained Conditionally (\texttt{Should})}: Tappable hotspots must display a distinct soft highlight border and label (\texttt{DD25}), paired with an equivalent button below. \\ \hline
+\textbf{3. Contextual Emotion Recognition (\texttt{Contextual Emotion Match})} & Identifying a character's emotion linked to what just happened in the story. & Matching isolated faces outside context encourages rote guessing (\texttt{UXC4}, \texttt{UXC12}). & \textbf{Retained in Contextual Form (\texttt{Should})}: Never presented as isolated face drills; emotion questions are embedded inside the story scene alongside the causal event. \\ \hline
+\textbf{4. Action / Event Sequence Ordering (\texttt{Sequence Ordering})} & Understanding multi-step social routines (e.g., Step 1 Knock $\rightarrow$ Step 2 Greet $\rightarrow$ Step 3 Ask). & Continuous press-and-drag (\texttt{Drag \& Drop}) demands fine motor precision and causes accidental drops (\texttt{C6}, \texttt{UXC7}). & \textbf{Converted to Single-Tap \texttt{Tap-to-Order} (\texttt{Must})}: The child simply \textbf{taps} cards in order to fill slots 1, 2, and 3; drag-and-drop is never required (\texttt{DD26}, \texttt{DD27}). \\ \hline
+\textbf{5. Free-Form Drag and Drop (\texttt{Free Drag \& Drop})} & Moving objects freely across the canvas. & High motor friction that distracts from social comprehension. & \textbf{Excluded from Core Flow}: Replaced by \texttt{Tap-to-Order} and single-tap \texttt{Choice Cards}. \\ \hline
+\textbf{6. Voice Interaction (\texttt{Scenario E})} & Practicing short functional spoken phrases for peer entry or help-seeking. & Reluctance to speak, noisy environments, or recognition errors causing frustration (\texttt{UXC11}, \texttt{UXC17}). & \textbf{Bounded Optional Modality in Scenario E (\texttt{Could}) with Mandatory Touch Fallback (\texttt{DD36})}: Specified in detail in Section 4.3.2 below. \\ \hline
+\end{xltabular}
+
+
+
+\subsection{Detailed Specification of Scenario E (Voice Interaction Scenario E)}
+
+
+To formally resolve the open design item noted in Sections 1.1, 1.4.2, and Screen \texttt{S24} in Section 5.5.3, \textbf{Scenario E} is specified as follows:
+
+\begin{itemize}
+  \item \textbf{Definition and Pedagogical Scope of Scenario E}:
+  \item \textbf{Scenario E} (\textit{Expressive Short-Phrase Practice Scenario}) is an optional, structured expressive practice step located at the end of selected stories in \textbf{CAT02 (Peer Entry)} and \textbf{CAT03 (Help-Seeking)}. It is activated only when the caregiver has enabled Scenario E voice support in the child's profile (\texttt{S04}).
+  \item Rather than open-ended AI conversation, Scenario E focuses exclusively on \textbf{short, functional social phrases of 3 to 6 words/syllables} directly tied to the story scene:
+\end{itemize}
+\begin{enumerate}
+  \item Help-seeking phrase: \textit{"Help me please"} (\textit{"Giúp con với"} / \textit{"Cô giúp con nhé"}).
+  \item Peer-entry phrase: \textit{"Can I play too?"} (\textit{"Cho mình chơi cùng nhé"}).
+  \item Break-request phrase: \textit{"I need a break"} (\textit{"Con muốn nghỉ một chút"}).
+\end{enumerate}
+\begin{itemize}
+  \item \textbf{Interaction Flow and Bounded Response Rules on Screen \texttt{S24}}:
+\end{itemize}
+\begin{enumerate}
+  \item \textbf{Model Prompt and Dual-Path Layout}: Screen \texttt{S24} displays the story scene, a \texttt{Listen to Model Phrase} button, a large central \texttt{Tap to Speak} button, and \textbf{always displays 2 illustrated touch choice cards in parallel} directly below (e.g., Card 1: \textit{"Say or show card: Can I play too?"} and Card 2: \textit{"Wait a little longer"}).
+  \item \textbf{Bounded Keyword Matching}: When the child taps \texttt{Tap to Speak}, the system listens for up to \textbf{$4\text{ seconds}$} using on-device speech recognition and checks whether the transcript contains the core functional keyword(s) (e.g., \textit{"help"}, \textit{"play"}, \textit{"break"}). The system \textbf{never} grades pronunciation accuracy and \textbf{never} generates unconstrained LLM replies to the child.
+  \item \textbf{Mandatory Non-Punitive Fallback}:
+\end{enumerate}
+\begin{itemize}
+  \item If the child taps an illustrated choice card directly without touching the microphone button: The system plays the model phrase audio and advances immediately to \texttt{Consequence} (\texttt{S11}) as a fully valid completion.
+  \item If speech is not recognized (\texttt{Speech Not Recognized}): The screen displays the calm prompt \textit{"Not heard clearly. Choose a picture or try again"} (\texttt{S23}). After at most 2 unclear attempts, the system gently highlights the illustrated touch card so the child can proceed effortlessly without frustration.
+\end{itemize}
+
+
+
+\section{Feedback Rules and the Core Learning Loop}
+
+
+
+\subsection{Six-Stage Core Learning Loop}
+
+
+Every story session in Bear Buddy operates around a consistent six-stage learning loop:
+
+\$$\text{Understand} \longrightarrow \text{Predict} \longrightarrow \text{Choose} \longrightarrow \text{Observe} \longrightarrow \text{Understand Why} \longrightarrow \text{Repeat}$\$
+
+\begin{itemize}
+  \item \textbf{Understand}: Absorb \textit{Who – Where – What is happening} through focused illustration and narration on \texttt{S09}.
+  \item \textbf{Predict}: Notice the highlighted social cue and anticipate how characters might feel or respond on \texttt{S09}/\texttt{S10}.
+  \item \textbf{Choose}: Express a decision via single-tap cards on \texttt{S10} (or bounded voice/touch on \texttt{S24}).
+  \item \textbf{Observe}: Watch the character's concrete reaction unfold in the scenario on \texttt{S11}.
+  \item \textbf{Understand Why}: Hear and read the contextual explanation linking the action to the reaction on \texttt{S12}.
+  \item \textbf{Repeat}: Freely use \texttt{Replay} to listen again or \texttt{Retry} to explore alternative choices at the child's own pace before moving forward.
+\end{itemize}
+
+
+
+\subsection{Non-Punitive Feedback Rules}
+
+
+To enforce the principles \textit{Explain, Don't Judge} (\texttt{P4}) and \textit{Safe to Explore and Repeat} (\texttt{P8}), Bear Buddy applies strict feedback rules across all interactive steps:
+
+\noindent\begin{xltabular}{\textwidth}{|p{3.2cm}|p{4.0cm}|X|}
+\hline
+\textbf{Design Dimension} & \textbf{Prohibited Anti-Patterns} & \textbf{Bear Buddy Standard Feedback Rule (\texttt{DD15}–\texttt{DD19})} \\ \hline
+\endhead
+\textbf{Evaluative Language} & Displaying \textit{"Wrong!"}, \textit{"Incorrect!"}, \textit{"Bad choice"}, or deducting points/stars. & Neutrally restates the chosen action and links it to the character's reaction in context (\textit{"When I..., my friend might..."}). \\ \hline
+\textbf{Visual \& Auditory Signals} & Flashing red error borders, harsh vibrations, or negative buzzer sound effects. & Maintains the calm color palette (\texttt{\#F7F9FC}, \texttt{\#2D6253}, \texttt{\#F4D06F}), depicts natural surprised/confused character expressions in the illustration, and uses a calm narrator voice. \\ \hline
+\textbf{Retry Guidance (\texttt{Retry})} & Forcing immediate repetition without explanation, or locking the child out of exploring other branches. & Always presents the \textit{Why} explanation first, then gently invites exploration (\textit{"I can try asking my friend first to see what happens"}) via the \texttt{Try Another Way} button. \\ \hline
+\textbf{Caregiver Session Logging} & Computing percentage accuracy scores or diagnostic social competence grades. & Logs the descriptive sequence of choices explored, explanations viewed, and \texttt{Replay}/\texttt{Retry} counts for caregiver reflection (\texttt{DD38}). \\ \hline
+\end{xltabular}

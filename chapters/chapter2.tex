@@ -1,0 +1,258 @@
+\chapter{Background and Related Work}
+
+\section{Target User Group Characteristics}
+
+\subsection{Children and Developmental Diversity}
+
+Child development encompasses interconnected domains including receptive and expressive language, social cognition, sensory processing, fine motor coordination, and executive functioning. In early and middle childhood (ages 4--10), children acquire communicative competencies primarily through observation, concrete modeling, and guided social interactions. However, children exhibit wide variations in developmental pace, cognitive processing styles, and emotional regulation thresholds. Designing interactive software for this demographic necessitates structured predictability, intuitive affordances, and cognitive load minimization.
+
+\subsection{Autism Spectrum and Diversity of Competency Profiles}
+
+Autism Spectrum Disorder (ASD) is characterized by persistent differences in social communication and interaction, alongside restricted or repetitive patterns of behavior, interests, or activities~\cite{cdc_diagnosis, nih_asd}. Individuals on the autism spectrum demonstrate heterogeneous developmental profiles; capabilities vary significantly across cognitive, linguistic, sensory, and motor dimensions. Table~\ref{tab:c2_asd_dimensions} delineates key developmental dimensions and their corresponding implications for digital system design.
+
+\begin{xltabular}{\textwidth}{|p{4.0cm}|X|}
+\hline
+\textbf{Developmental Dimension} & \textbf{Observed Difficulties and System Design Implications} \\ \hline
+\endhead
+\textbf{Social Understanding} & Autistic children frequently require explicit scaffolding to interpret facial expressions, vocal prosody, subtle intentions, or conversational turn-taking rules. The system must render implicit social cues concrete and visible. \\ \hline
+\textbf{Communication} & Expressive abilities range from non-verbal and minimally verbal to fluent speech. Metaphorical language, sarcasm, and ambiguous instructions elevate cognitive anxiety. Interfaces must rely on concise, literal sentences and visual symbols. \\ \hline
+\textbf{Predictability \& Routine} & Sudden changes in activity or unclear sequences can trigger distress. Clear procedural progression, persistent forward/backward controls, and activity previews foster psychological safety. \\ \hline
+\textbf{Sensory Processing} & Atypical sensory reactivity is prevalent~\cite{cdc_symptoms}. Overlapping auditory stimuli, rapid animations, or flashing visual elements risk sensory overload. Auditory and visual outputs must remain single-stream and configurable. \\ \hline
+\textbf{Repetitive Behaviors \& Focused Interests} & Structured repetition supports consolidation and emotional stabilization. The application must permit penalty-free replaying and retrying of narrative steps without timer pressure. \\ \hline
+\textbf{Executive Function \& Emotion Regulation} & Difficulties with working memory and cognitive flexibility make complex multi-step choices frustrating. Options must be limited to 2--3 discrete, distinct choices per interaction point. \\ \hline
+\end{xltabular}
+\label{tab:c2_asd_dimensions}
+
+\subsection{Prioritized Developmental Competency Profile}
+
+To ensure high internal validity and focused UX execution, Bear Buddy prioritizes a specific developmental competency profile:
+\begin{itemize}
+    \item \textbf{Age}: 4 to 10 years old.
+    \item \textbf{Language Level}: Verbal or minimally verbal learners who comprehend simple spoken phrases and recognize common pictorial representations, but do not yet rely on independent reading for task completion.
+    \item \textbf{Motor Competence}: Capable of gross single-finger taps on large touch targets, while experiencing instability with fine multi-finger gestures, precision dragging, or prolonged holding.
+    \item \textbf{Cognitive Need}: Requires concrete cause-and-effect demonstration connecting personal actions to peer/adult reactions and explicit reasons.
+\end{itemize}
+
+\section{Foundations of the Social Story Methodology}
+
+\subsection{Origins and Purpose}
+
+The Social Story methodology was developed by Carol Gray in the early 1990s as a structured psychoeducational intervention to share accurate social information with autistic individuals~\cite{gray_overview, gray_what_is}. Rather than functioning as a compliance tool or behavioral modification script, a authentic Social Story aims to describe social situations objectively, highlighting relevant social cues, perspectives, and potential responses in a reassuring, respectful tone. Clinical trials and systematic reviews, including the ASSIST2 randomized controlled trial~\cite{wright_assist2_2024}, indicate that structured social stories support social understanding and emotional well-being when authored with fidelity to standardized criteria.
+
+\subsection{Structure and Linguistic Criteria}
+
+According to the Social Stories 10.4 criteria~\cite{gray_criteria_2023}, an authentic social story must maintain a supportive, patient tone and balance sentence types according to the \textit{Social Story Formula}:
+\begin{equation}
+\frac{\text{Descriptive} + \text{Perspective} + \text{Affirmative Sentences}}{\text{Directive / Coaching Sentences}} \ge 2
+\end{equation}
+This formula ensures that descriptive and reassuring statements significantly outnumber directive instructions. Table~\ref{tab:c2_sentence_types} outlines how these sentence functions are operationalized in Bear Buddy.
+
+\begin{xltabular}{\textwidth}{|p{4.0cm}|X|}
+\hline
+\textbf{Sentence Function} & \textbf{Operationalization in Bear Buddy Stories} \\ \hline
+\endhead
+\textbf{Descriptive Sentences} & Provide objective factual information regarding the setting, participants, and visible actions (e.g., ``The children are playing with blocks on the carpet.''). \\ \hline
+\textbf{Perspective Sentences} & Describe the internal feelings, thoughts, or reactions of characters in an empathetic manner (e.g., ``My classmate feels happy when we take turns.''). \\ \hline
+\textbf{Directive / Coaching} & Offer gentle, flexible behavioral suggestions rather than rigid demands (e.g., ``I can try tapping my friend's shoulder to ask for a turn.''). \\ \hline
+\textbf{Affirmative Sentences} & Reassure the learner and validate common values or shared experiences (e.g., ``It is okay to feel disappointed when waiting is hard.''). \\ \hline
+\end{xltabular}
+\label{tab:c2_sentence_types}
+
+\subsection{Content Preparation and Personalization Workflow}
+
+Applying social stories effectively requires personalized preparation:
+\begin{enumerate}
+    \item \textbf{Context Elicitation}: Identifying the specific trigger or unfamiliar situation causing anxiety (e.g., transitioning between activities).
+    \item \textbf{Information Gathering}: Determining the child's perspective, sensory sensitivities, and preferred visual cues.
+    \item \textbf{Text Drafting}: Composing short, affirmative sentences respecting the 10.4 ratio criteria.
+    \item \textbf{Multimodal Pairing}: Associating each sentence with a concrete visual frame and clear audio narration.
+    \item \textbf{Guided Review and Rehearsal}: Introducing the story in a calm environment prior to facing the real-world event.
+\end{enumerate}
+
+\subsection{Illustrative Scenario: Visiting the Doctor}
+
+Consider an unfamiliar clinical visit. A conventional approach might offer verbal reminders during the examination, often overwhelming the child. A structured Bear Buddy story breaks the experience into predictable segments:
+\begin{enumerate}
+    \item \textit{Waiting Room}: ``The clinic has chairs and books. People wait quietly until their name is called.''
+    \item \textit{Instruments}: ``The doctor uses a stethoscope. It feels cool on my chest for a few seconds.''
+    \item \textit{Cooperative Action}: ``I can sit still on the examination table while the doctor listens.''
+    \item \textit{Closure}: ``When the checkup is finished, I can return home with my parent.''
+\end{enumerate}
+
+\subsection{Application in Bear Buddy and Evidence Boundaries}
+
+Bear Buddy translates the traditional paper booklet format into an interactive digital application. However, academic integrity requires distinguishing between verified clinical evidence and interactive design hypotheses:
+\begin{itemize}
+    \item \textbf{Established Evidence}: The efficacy of visual narratives and social stories in reducing anxiety and clarifying expectations is well documented in special education literature~\cite{gray_criteria_2023, wright_assist2_2024}.
+    \item \textbf{Interactive Hypotheses}: Incorporating digital decision points, branching consequence animations, and voice practice represents an interactive software hypothesis designed to enhance engagement, which requires empirical validation through user testing.
+\end{itemize}
+
+\section{Multimodal Learning via Visuals, Narration, and Interaction}
+
+\subsection{Concrete Visual Representations}
+
+Visual stimuli provide cognitive anchoring for children who experience difficulties with auditory language processing. In Bear Buddy:
+\begin{itemize}
+    \item Characters are illustrated with clear, unambiguous facial expressions and posture.
+    \item Irrelevant background clutter and motion visual noise are eliminated.
+    \item Interactive targets are highlighted with distinct outlines and high-contrast bounding boxes.
+\end{itemize}
+
+\subsection{Short Sentences and Audio Narration}
+
+To accommodate varying reading abilities, all on-screen text is paired with professional, synchronized single-stream audio narration. The narration utilizes:
+\begin{itemize}
+    \item Natural, calm pacing (110--125 words per minute).
+    \item Clear articulation without background music or sound effects that could mask spoken dialogue.
+    \item Complete user control to pause, resume, or replay audio segments at will.
+\end{itemize}
+
+\subsection{Interactive Engagement and Cause-and-Effect Relationships}
+
+Unlike passive video watching or static reading, interactive selection requires active cognitive participation. By choosing a response (e.g., tapping ``Ask politely'' vs.\ ``Grab the toy''), the child directly observes the resulting social reaction and the underlying ``Why'' explanation. This immediate feedback loop operationalizes Piagetian schema modification in a risk-free simulation.
+
+\subsection{Channel Coordination and Cognitive Load Limits}
+
+Simultaneous multimedia channels can induce split-attention effects. In Bear Buddy:
+\begin{itemize}
+    \item Audio and visual streams are strictly synchronized to describe the same conceptual focal point.
+    \item Decision options appear only after the scene narration completes, preventing visual distraction during context setup.
+    \item Sound effects are restricted to gentle auditory chimes confirming selection, avoiding loud or startling tones.
+\end{itemize}
+
+\section{Personas and Developmental Capability Profiles}
+
+\subsection{Persona PERS01: Minh (Primary Child Learner)}
+
+\begin{xltabular}{\textwidth}{|p{4.0cm}|p{4.5cm}|X|}
+\hline
+\textbf{Competency Dimension} & \textbf{Observed Persona Characteristic} & \textbf{System Design Scaffolding} \\ \hline
+\endhead
+\textbf{Language Comprehension} & Understands short, concrete phrases in familiar settings; struggles with compound sentences. & Single-clause sentences ($<12$ words); single-stream narration (\texttt{DD7}, \texttt{DD8}). \\ \hline
+\textbf{Expressive Communication} & Primarily indicates preferences by pointing/tapping; emerging short verbal responses. & Touch card selection with large tap boundaries; optional voice practice (\texttt{DD26}, \texttt{DD27}). \\ \hline
+\textbf{Visual Recognition} & Readily recognizes familiar objects and everyday actions; abstract symbols cause confusion. & High-clarity concrete illustrations without decorative visual clutter (\texttt{DD11}). \\ \hline
+\textbf{Reading Competence} & Emergent reader; cannot rely on textual cues alone for activity progression. & Mandatory audio narration accompanied by text highlighting (\texttt{DD10}). \\ \hline
+\textbf{Attention \& Transition} & Distracted by competing animations or sudden auditory shifts. & Predictable scene templates; no background audio tracks (\texttt{DD20}, \texttt{DD22}). \\ \hline
+\textbf{Cause-and-Effect} & Successfully links actions to outcomes when explicitly demonstrated step-by-step. & Explicit three-part feedback sequence: Action $\rightarrow$ Reaction $\rightarrow$ Why explanation (\texttt{DD13}, \texttt{DD14}). \\ \hline
+\textbf{Motor Coordination} & Capable of direct single taps; precision dragging or pinch gestures are erratic. & Minimum 56dp tap targets; no multi-touch, drag-and-drop, or timed tap demands (\texttt{DD28}, \texttt{DD30}). \\ \hline
+\textbf{Sensory Sensitivity} & Startled by sudden loud noises or flashing screen transitions. & Soft color palette; gradual crossfades; no jarring alarm sounds (\texttt{DD21}, \texttt{DD23}). \\ \hline
+\textbf{Regulation \& Agency} & May disengage or seek adult assistance when overwhelmed. & Prominent ``Take a Break'' and ``Need Help'' buttons available on all child screens (\texttt{DD37}). \\ \hline
+\textbf{Adult Scaffolding} & Benefits from adult co-viewing during initial exposure to unfamiliar stories. & Role-separated Caregiver Mode allowing parents to preview content and review attempts (\texttt{DD31}). \\ \hline
+\end{xltabular}
+\label{tab:c2_persona_minh}
+
+\subsection{Persona PERS02: Ms. An (Primary Parent Companion)}
+
+Ms.~An is the mother of 6-year-old Minh. She works full-time and coordinates home developmental exercises in the evening. Her core goals include:
+\begin{itemize}
+    \item Finding reliable, evidence-informed digital tools that reinforce positive social communication.
+    \item Preparing Minh for upcoming school events or routine disruptions without generating anxiety.
+    \item Gaining visibility into Minh's progress and understanding which social concepts require reinforcement.
+    \item Ensuring her child's voice and behavioral data remain strictly private and securely stored on the local device.
+\end{itemize}
+
+\subsection{Persona PERS03: Ms. Mai (Special Education Support Teacher)}
+
+Ms.~Mai is an inclusion support educator working with autistic elementary students. Her primary operational requirements are:
+\begin{itemize}
+    \item Selecting specific situational social stories aligned with weekly classroom behavioral objectives.
+    \item Guiding structured 10-minute intervention sessions during school hours.
+    \item Redeeming parent-delegated access links without accessing the family's private account or billing information.
+    \item Reviewing interaction logs to discuss behavioral observations with parents during parent-teacher consultations.
+\end{itemize}
+
+\subsection{Testable Assumptions Derived from Personas}
+
+The personas establish explicit assumptions to be validated through usability testing:
+\begin{enumerate}
+    \item A single-touch tap interface is sufficient for autistic children within the target motor competency profile to navigate story decisions without frustration.
+    \item Explaining the causal ``Why'' behind peer reactions increases social concept retention compared to passive story presentation.
+    \item Caregivers actively utilize session logs to facilitate follow-up verbal discussions with children.
+\end{enumerate}
+
+\section{Related Work Analysis}
+
+\subsection{Comparative Methodology}
+
+To position Bear Buddy within the assistive educational software landscape, we conducted a systematic evaluation of three prominent commercial and clinical applications: Pictello, Social Stories Creator and Library, and Choiceworks. The analysis evaluates authoring flexibility, interactive decision-making, feedback mechanisms, and caregiver review capabilities.
+
+\subsection{Pictello (AssistiveWare)}
+
+Pictello is a versatile visual storytelling application widely used in augmentative and alternative communication (AAC)~\cite{pictello}.
+\begin{itemize}
+    \item \textbf{Strengths}: Supports custom photo/video importation, synthetic text-to-speech, recorded voice narration, and story sharing via PDF or cloud accounts.
+    \item \textbf{Limitations}: Stories are linear and passive. The application lacks interactive decision points, branching consequence exploration, and structured cause-and-effect review analytics.
+\end{itemize}
+
+\subsection{Social Stories Creator and Library (Touch Autism)}
+
+Social Stories Creator and Library provides pre-made social stories alongside tools for custom book creation~\cite{social_stories_creator}.
+\begin{itemize}
+    \item \textbf{Strengths}: Library organized by pediatric social themes; intuitive page-turning interface; customizable text and images.
+    \item \textbf{Limitations}: Reading is linear. Feedback is limited to page completion without interactive prediction activities or non-punitive decision reinforcement.
+\end{itemize}
+
+\subsection{Choiceworks (Bee Visual)}
+
+Choiceworks focuses on daily visual schedules, waiting boards, and emotional choice-making~\cite{choiceworks}.
+\begin{itemize}
+    \item \textbf{Strengths}: Exceptional visual clarity for scheduling and emotional regulation; tangible drag-to-complete interactions; high predictability.
+    \item \textbf{Limitations}: Structured as a task checklist rather than a situational social narrative. It does not provide narrative context or explicit causal explanations for interpersonal interactions.
+\end{itemize}
+
+\subsection{Synthesis and Strategic Positioning}
+
+Table~\ref{tab:c2_related_work} synthesizes the comparative findings, highlighting Bear Buddy's unique integration of interactive social stories with explainable cause-and-effect learning.
+
+\begin{xltabular}{\textwidth}{|p{3.2cm}|p{4.5cm}|X|}
+\hline
+\textbf{Application} & \textbf{Officially Documented Strengths} & \textbf{Gap Addressed by Bear Buddy} \\ \hline
+\endhead
+\textbf{Pictello} & Rich multimedia authoring, synthetic and natural speech playback, visual story sharing. & Implements interactive branching choices, explicit consequence displays, and non-punitive learning loops. \\ \hline
+\textbf{Social Stories Creator} & Thematic story library, simple page-by-page presentation for pediatric users. & Integrates structured cause-and-effect reasoning (\textit{Action $\rightarrow$ Reaction $\rightarrow$ Why}) and caregiver review analytics. \\ \hline
+\textbf{Choiceworks} & Highly effective visual schedules, waiting timers, and emotional regulation boards. & Embeds situational decision activities into full narrative contexts rather than isolated scheduling lists. \\ \hline
+\end{xltabular}
+\label{tab:c2_related_work}
+
+\section{Requirements Elicitation and Validation Plan}
+
+\subsection{Existing Evidence and Knowledge Gaps}
+
+While current literature verifies the general benefits of social narratives and visual aids~\cite{gray_criteria_2023, wcag22}, critical empirical questions remain regarding digital interactive implementations:
+\begin{itemize}
+    \item How many choices can a child process simultaneously without experiencing cognitive overload?
+    \item Does on-device speech practice in Scenario~E encourage verbal imitation, or does it elevate performance anxiety?
+    \item What log granularity do caregivers require to conduct meaningful post-session discussions?
+\end{itemize}
+
+\subsection{Planned User Research Activities}
+
+To address these knowledge gaps, the Bear Buddy development plan specifies three iterative research activities:
+\begin{enumerate}
+    \item \textbf{Expert Content Review}: Collaborating with special education practitioners and speech therapists to review story scripts against Carol Gray's 10.4 sentence criteria.
+    \item \textbf{Co-Viewing Observational Sessions}: Observing parent-child dyads navigating interactive story modules to evaluate tap target ergonomics, pacing, and emotional responses.
+    \item \textbf{Caregiver Review Interviews}: Evaluating whether parents and teachers find version-pinned session summaries actionable for individualized educational planning.
+\end{enumerate}
+
+\subsection{Mapping User Needs to Design Specifications}
+
+Table~\ref{tab:c2_user_needs} maps the twelve elicited user needs (\texttt{UN01}--\texttt{UN12}) directly to the corresponding UI/UX design decisions (\texttt{DD1}--\texttt{DD40}) and architectural modules.
+
+\begin{xltabular}{\textwidth}{|p{1.8cm}|p{4.5cm}|X|}
+\hline
+\textbf{User Need} & \textbf{Elicited User Requirement} & \textbf{Design Decision and Architectural Tracing} \\ \hline
+\endhead
+\textbf{UN01} & Comprehend situational context before being prompted to make decisions. & Explicit Scene Context screen establishing participants and environment (\texttt{DD13}, \texttt{DD14}, Screen \texttt{S09}). \\ \hline
+\textbf{UN02} & Engage meaningfully with stories without requiring independent reading fluency. & Synchronized single-stream narration and concrete pictorial representations (\texttt{DD7}--\texttt{DD12}, Screen \texttt{S09}). \\ \hline
+\textbf{UN03} & Maintain situational predictability and awareness of current activity progress. & Consistent step indicator, persistent navigation controls, and standardized screen templates (\texttt{DD2}--\texttt{DD6}). \\ \hline
+\textbf{UN04} & Select choices without requiring fine motor precision or complex multi-touch gestures. & Large touch cards ($\ge 56\text{dp}$) with generous padding and single-tap selection (\texttt{DD26}--\texttt{DD30}, Screen \texttt{S10}). \\ \hline
+\textbf{UN05} & Understand why social reactions occur and replay or retry without penalty. & Two-stage feedback displaying character reaction and explicit ``Why'' rationale (\texttt{DD15}--\texttt{DD19}, Screens \texttt{S11}, \texttt{S12}). \\ \hline
+\textbf{UN06} & Regulate sensory stimulation and pacing according to individual sensitivity. & Dedicated accessibility controls for volume, contrast, font scaling, and animation speed (\texttt{DD20}--\texttt{DD25}). \\ \hline
+\textbf{UN07} & Allow caregivers to search, filter, preview, and select developmentally matched stories. & Searchable situational library with objective previews in Caregiver Mode (\texttt{DD32}, \texttt{DD33}, Screens \texttt{S06}, \texttt{S07}). \\ \hline
+\textbf{UN08} & Review accurate, version-pinned session records linked to specific child profiles. & Persistent session history recording exact story version, chosen options, and retry counts (\texttt{DD34}, Screen \texttt{S15}). \\ \hline
+\textbf{UN09} & Understand the rationale behind AI recommendations and maintain full supervisory control. & Explainable grounded AI suggestions providing clear match reasoning with manual override (\texttt{DD35}, Screen \texttt{S05}). \\ \hline
+\textbf{UN10} & Empower the child to pause the activity or request adult assistance at any moment. & Persistent, accessible ``Take a Break'' and ``Need Help'' controls (\texttt{DD37}, Screens \texttt{S09}--\texttt{S14}). \\ \hline
+\textbf{UN11} & Ensure child data, voice inputs, and learning logs are protected with strict privacy. & Local-first data architecture, transparent microphone consent, and role separation (\texttt{DD31}, \texttt{DD36}, \texttt{DD38}). \\ \hline
+\textbf{UN12} & Provide graceful error recovery and offline fallback when services are interrupted. & Automatic fallback to touch interaction and preserved local state on network loss (\texttt{DD39}, \texttt{DD40}). \\ \hline
+\end{xltabular}
+\label{tab:c2_user_needs}

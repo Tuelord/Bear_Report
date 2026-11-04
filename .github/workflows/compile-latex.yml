@@ -1,0 +1,91 @@
+name: Build and Compile LaTeX Report
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-compile:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Mermaid CLI
+        run: |
+          npm install -g @mermaid-js/mermaid-cli
+
+      - name: Render Mermaid Diagrams to High-Resolution PNGs
+        run: |
+          mkdir -p figures
+          echo '{"args": ["--no-sandbox"]}' > puppeteer-config.json
+          
+          echo "Rendering 01_use_case_diagram.mmd..."
+          mmdc -p puppeteer-config.json -i diagrams/01_use_case_diagram.mmd -o figures/use_case_diagram.png -s 3 -b white
+          
+          echo "Rendering 02_context_diagram.mmd..."
+          mmdc -p puppeteer-config.json -i diagrams/02_context_diagram.mmd -o figures/context_diagram.png -s 3 -b white
+          
+          echo "Rendering 03_dfd_level_0.mmd..."
+          mmdc -p puppeteer-config.json -i diagrams/03_dfd_level_0.mmd -o figures/dfd_level_0.png -s 3 -b white
+          
+          echo "Rendering 04_story_five_stages.mmd..."
+          mmdc -p puppeteer-config.json -i diagrams/04_story_five_stages.mmd -o figures/story_five_stages.png -s 3 -b white
+          
+          echo "Rendering 05_system_architecture.mmd..."
+          mmdc -p puppeteer-config.json -i diagrams/05_system_architecture.mmd -o figures/system_architecture.png -s 3 -b white
+          
+          echo "Rendering 06_sqlite_erd.mmd..."
+          mmdc -p puppeteer-config.json -i diagrams/06_sqlite_erd.mmd -o figures/sqlite_erd.png -s 3 -b white
+          
+          echo "Rendering 07_sequence_story_learning.mmd..."
+          mmdc -p puppeteer-config.json -i diagrams/07_sequence_story_learning.mmd -o figures/sequence_story_learning.png -s 3 -b white
+          
+          echo "Rendering 08_sequence_voice_interaction.mmd..."
+          mmdc -p puppeteer-config.json -i diagrams/08_sequence_voice_interaction.mmd -o figures/sequence_voice_interaction.png -s 3 -b white
+          
+          echo "Rendering 09_state_machine.mmd..."
+          mmdc -p puppeteer-config.json -i diagrams/09_state_machine.mmd -o figures/state_machine.png -s 3 -b white
+
+      - name: Compile LaTeX Document (XeLaTeX)
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: main.tex
+          latexmk_use_xelatex: true
+
+      - name: Rename Compiled PDF
+        run: |
+          cp main.pdf Bear_Buddy_Report.pdf
+
+      - name: Upload PDF Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Bear_Buddy_Report_PDF
+          path: Bear_Buddy_Report.pdf
+          if-no-files-found: error
+
+      - name: Create GitHub Release with PDF (on tag or manual trigger)
+        if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: Bear_Buddy_Report.pdf
+          name: "Bear Buddy Report PDF"
+          tag_name: "v1.0-${{ github.run_number }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

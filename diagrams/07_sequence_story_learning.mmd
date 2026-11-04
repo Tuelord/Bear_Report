@@ -1,0 +1,54 @@
+sequenceDiagram
+    actor Caregiver as Caregiver (PERS02/PERS03)
+    actor Child as Child Learner (PERS01)
+    participant UI as SwiftUI Views (S07..S16)
+    participant Engine as MOD03: StoryEngine
+    participant Audio as MOD04: SpeechController
+    participant Logger as MOD06: Session & Review
+    participant DB as MOD08: SQLite Database
+
+    Caregiver->>UI: Open Story Details & Preview (S07)
+    UI->>DB: Query story metadata & active story_version
+    DB-->>UI: Return StoryVersion + Steps + Options
+    Caregiver->>UI: Tap "Start with Child" (Enter Child Mode)
+    UI->>Logger: createSession(child_id, caregiver_id, story_version_id)
+    Logger->>DB: INSERT INTO learning_sessions (IN_PROGRESS)
+
+    loop For each scene in story (S09 -> S12)
+        Engine->>UI: Render Story Context & Social Cues (S09)
+        Engine->>Audio: speakSingleStream(narration_text)
+        Audio-->>Child: Play narration (preventing audio overlap)
+
+        Child->>UI: Tap Choice Card on Decision Activity (S10)
+        UI->>Engine: selectOption(step_id, option_id)
+        Engine->>Logger: logInteraction(CHOOSE_TAP, step_id, option_id, attempt)
+        Logger->>DB: INSERT INTO session_interactions
+
+        Engine->>UI: Render Consequence (S11) & Why Explanation (S12)
+        Engine->>Audio: speakSingleStream(reaction_text + why_explanation)
+
+        alt Child taps "Replay" (Listen Again)
+            Child->>UI: Tap "Replay" button (S12)
+            UI->>Logger: logInteraction(REPLAY, step_id)
+            Engine->>Audio: stopCurrentAndReplay()
+        else Child taps "Try Another Way" (Penalty-Free Retry)
+            Child->>UI: Tap "Try Another Way" (S12)
+            UI->>Logger: logInteraction(RETRY, step_id)
+            Engine->>UI: Return to Decision Activity (S10)
+        else Child taps "Pause" or "Need Help" (S13)
+            Child->>UI: Tap "Pause / Need Help"
+            UI->>Audio: stopImmediately()
+            UI->>Logger: logInteraction(PAUSE_OR_HELP, step_id)
+            Logger->>DB: UPDATE learning_sessions SET status='PAUSED'
+            UI-->>Child: Display calm Pause & Help screen (S13)
+        end
+    end
+
+    Engine->>UI: Display Session End screen (S14 - No Auto-Play)
+    Logger->>DB: UPDATE learning_sessions SET status='COMPLETED'
+
+    Caregiver->>UI: Pass Caregiver Gate & Open Session Review (S16)
+    UI->>Logger: getSessionReview(session_id)
+    Logger->>DB: SELECT session + interactions JOIN story_versions ON story_version_id
+    DB-->>UI: Return exact choices & explanations from experienced story_version
+    UI-->>Caregiver: Render descriptive observational review (S16)
