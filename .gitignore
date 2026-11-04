@@ -17,7 +17,8 @@
 __pycache__/
 *.pyc
 scratch/
-*.py
+
 # OS files
 .DS_Store
 Thumbs.db
+

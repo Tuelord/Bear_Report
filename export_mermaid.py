@@ -79,3 +79,4 @@ print("=" * 60)
 print(f"Hoàn tất! Các file ảnh đã được lưu vào thư mục: {FIGURES_DIR}")
 print("Bây giờ bạn có thể biên dịch lại main.tex để xem hình mới.")
 print("=" * 60)
+
