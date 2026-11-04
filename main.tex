@@ -1,7 +1,10 @@
 \documentclass[12pt,a4paper]{report}
 
-% --- Multi-Engine Font and Language Support (English) ---
+% --- Typography & Font Setup ---
 \usepackage{iftex}
+\usepackage{scrextend}
+\changefontsizes[19.5pt]{13pt} % Exactly 13pt base font matching template.pdf
+
 \ifPDFTeX
   \usepackage[utf8]{inputenc}
   \usepackage[T1]{fontenc}
@@ -11,22 +14,32 @@
   \usepackage{fontspec}
   \usepackage[english]{babel}
   \defaultfontfeatures{Ligatures=TeX}
-  % Explicitly bind UprightFont to Regular to prevent XeTeX/fontconfig from defaulting to Bold on Linux
-  \IfFontExistsTF{Times New Roman}{%
-    \setmainfont{Times New Roman}[
-      UprightFont = *,
-      BoldFont = * Bold,
-      ItalicFont = * Italic,
-      BoldItalicFont = * Bold Italic
+  
+  % Guarantee non-bold regular body font by loading bundled Microsoft Times New Roman TrueType files
+  \IfFileExists{./fonts/times.ttf}{%
+    \setmainfont{times.ttf}[
+      Path = ./fonts/,
+      BoldFont = timesbd.ttf,
+      ItalicFont = timesi.ttf,
+      BoldItalicFont = timesbi.ttf
     ]%
   }{%
-    \setmainfont{texgyretermes}[
-      Extension = .otf,
-      UprightFont = *-regular,
-      BoldFont = *-bold,
-      ItalicFont = *-italic,
-      BoldItalicFont = *-bolditalic
-    ]%
+    \IfFontExistsTF{Times New Roman}{%
+      \setmainfont{Times New Roman}[
+        UprightFont = *,
+        BoldFont = * Bold,
+        ItalicFont = * Italic,
+        BoldItalicFont = * Bold Italic
+      ]%
+    }{%
+      \setmainfont{texgyretermes}[
+        Extension = .otf,
+        UprightFont = *-regular,
+        BoldFont = *-bold,
+        ItalicFont = *-italic,
+        BoldItalicFont = *-bolditalic
+      ]%
+    }%
   }
 \fi
 
@@ -37,25 +50,24 @@
 \usepackage{setspace}
 \onehalfspacing
 \setlength{\parindent}{1.5em}
-\setlength{\parskip}{0.35em}
+\setlength{\parskip}{0pt}
 
-% --- Header and Footer Formatting ---
+% --- Header and Footer Formatting (Page number centered at bottom, no top header) ---
 \usepackage{fancyhdr}
 \pagestyle{fancy}
 \fancyhf{}
-\cfoot{\thepage}
+\cfoot{\fontsize{13pt}{15pt}\selectfont\thepage}
 \renewcommand{\headrulewidth}{0pt}
 \renewcommand{\footrulewidth}{0pt}
 
-% Force plain pagestyle on chapter pages to match
-\fancypagestyle{plain}{
-  \fancyhf{}
-  \cfoot{\thepage}
-  \renewcommand{\headrulewidth}{0pt}
-  \renewcommand{\footrulewidth}{0pt}
+\fancypagestyle{plain}{%
+  \fancyhf{}%
+  \cfoot{\fontsize{13pt}{15pt}\selectfont\thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
 }
 
-% --- Graphics and TikZ (Used for Cover Borders) ---
+% --- Graphics and TikZ ---
 \usepackage{graphicx}
 \usepackage{tikz}
 \usetikzlibrary{calc}
@@ -88,7 +100,7 @@
     keywordstyle=\color{blue!80!black}\bfseries,
     numberstyle=\tiny\color{codegray},
     stringstyle=\color{codepurple},
-    basicstyle=\ttfamily\footnotesize,
+    basicstyle=\ttfamily\small,
     breakatwhitespace=false,         
     breaklines=true,                 
     captionpos=b,                    
@@ -103,10 +115,11 @@
 }
 \lstset{style=bearbuddystyle}
 
-% --- Captions and Hyperlinks ---
+% --- Captions (Regular font matching template.pdf) ---
 \usepackage{caption}
-\captionsetup{font=small, labelfont=bf, labelsep=colon}
+\captionsetup{font=normalsize, labelfont=normalfont, labelsep=colon}
 
+% --- Hyperlinks ---
 \usepackage{hyperref}
 \hypersetup{
     colorlinks=true,
@@ -131,7 +144,7 @@
 % Cover page
 \input{cover}
 
-% Member contributions table
+% Member contributions table (page i)
 \input{contributions}
 
 % Table of Contents
