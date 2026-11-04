@@ -10,11 +10,23 @@
 \else
   \usepackage{fontspec}
   \usepackage[english]{babel}
-  % Use Times New Roman if available on system; otherwise use TeX Gyre Termes (TeX Live standard Times clone)
+  \defaultfontfeatures{Ligatures=TeX}
+  % Explicitly bind UprightFont to Regular to prevent XeTeX/fontconfig from defaulting to Bold on Linux
   \IfFontExistsTF{Times New Roman}{%
-    \setmainfont{Times New Roman}%
+    \setmainfont{Times New Roman}[
+      UprightFont = *,
+      BoldFont = * Bold,
+      ItalicFont = * Italic,
+      BoldItalicFont = * Bold Italic
+    ]%
   }{%
-    \setmainfont{TeX Gyre Termes}%
+    \setmainfont{texgyretermes}[
+      Extension = .otf,
+      UprightFont = *-regular,
+      BoldFont = *-bold,
+      ItalicFont = *-italic,
+      BoldItalicFont = *-bolditalic
+    ]%
   }
 \fi
 
