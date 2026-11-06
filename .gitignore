@@ -22,3 +22,8 @@ scratch/
 .DS_Store
 Thumbs.db
 
+
+# Markdown chapter drafts (chapters 1-6), not part of the LaTeX build
+Bear_Buddy_Chuong_*.md
+chapter_*.md
+chapter[1-6]*.md
