@@ -110,13 +110,14 @@ Following the four expressive sentence functions defined in Section 2.2.2 and Ca
 
 
 
-\subsection{Complete Walkthrough Script: "Asking to Join a Game" (\texttt{ST\_JOIN\_PLAY\_v1.0})}
+\subsection{Complete Walkthrough Script: ``Asking to Join a Game''}
 
 
-The table below illustrates a complete screen-by-screen script for a standard interactive story in Bear Buddy:
+The table below illustrates a complete screen-by-screen script for a standard interactive story in Bear Buddy (story identifier: \texttt{ST\_JOIN\_PLAY\_v1.0}):
 
 \begin{footnotesize}
-\noindent\begin{xltabular}{\textwidth}{|c|p{2.2cm}|X|p{2.0cm}|p{2.4cm}|}
+\setlength{\tabcolsep}{4pt}
+\noindent\begin{longtable}{|p{0.12\linewidth}|p{0.12\linewidth}|p{0.27\linewidth}|p{0.19\linewidth}|p{0.14\linewidth}|}
 \hline
 \textbf{Scene / Screen} & \textbf{Sentence Function} & \textbf{On-Screen Text \& Narration} & \textbf{Visual Illustration \& Explicit Social Cues (\texttt{DD13}, \texttt{DD14})} & \textbf{Interaction \& Navigation Controls} \\ \hline
 \endhead
@@ -127,7 +128,8 @@ The table below illustrates a complete screen-by-screen script for a standard in
 \textbf{Branch B (\texttt{S11} $\rightarrow$ \texttt{S12})} & Consequence + Why + Coaching & $\bullet$ \textbf{Action}: \textit{"I ran in and grabbed the ball."} \newline $\bullet$ \textbf{Reaction}: \textit{"My friends stopped playing, looked surprised, and held onto the ball."} \newline $\bullet$ \textbf{Why}: \textit{"Taking the ball suddenly without asking can surprise my friends because they do not know I want to play together. I can try asking first."} & The peers look surprised with wide eyes, holding the ball. (No red 'X' or error buzzer is used). & \texttt{Replay} / \texttt{Try Another Way} (returns to Scene 3 without penalty) / \texttt{Next} \\ \hline
 \textbf{Branch C (\texttt{S11} $\rightarrow$ \texttt{S12})} & Consequence + Why + Coaching & $\bullet$ \textbf{Action}: \textit{"I stood far away and watched quietly."} \newline $\bullet$ \textbf{Reaction}: \textit{"My friends kept rolling the ball to each other."} \newline $\bullet$ \textbf{Why}: \textit{"Because I stood far away and did not signal, my friends were busy looking at the ball and did not notice me. I can walk closer or wave."} & The child remains in the background while the two peers continue looking at the ball. & \texttt{Replay} / \texttt{Try Another Way} / \texttt{Next} \\ \hline
 \textbf{Closure (\texttt{S14})} & Affirmative + Coaching & \textit{"When I want to join a game, walking closer and asking or waving helps my friends understand. If I feel shy, I can also ask an adult to help me."} & The child character, Bear Buddy, and the friends rolling the ball together; session end controls displayed. & \texttt{Replay Story} / \texttt{Take a Break} / \texttt{Return with Caregiver} \\ \hline
-\end{xltabular}
+\end{longtable}
+\setlength{\tabcolsep}{6pt}
 \end{footnotesize}
 
 
